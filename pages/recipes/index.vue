@@ -6,6 +6,14 @@
         <div class="text-center">
           <h1 class="text-h3 font-weight-bold text-primary mb-2">Recherche de Recettes</h1>
           <p class="text-body-1 text-medium-emphasis">Découvrez de délicieuses recettes pour toutes les occasions</p>
+          
+          <!-- Message de sélection de repas -->
+          <div v-if="isMealSelectionMode" class="meal-selection-info mt-4">
+            <v-alert type="info" variant="tonal" class="text-center">
+              <v-icon class="mr-2">mdi-calendar-plus</v-icon>
+              Sélectionnez une recette pour le {{ selectedMeal === 'lunch' ? 'déjeuner' : 'dîner' }} du {{ selectedDate?.toLocaleDateString('fr-FR') }}
+            </v-alert>
+          </div>
         </div>
         
         <v-btn
@@ -37,9 +45,9 @@
       <!-- Filtres en boutons arrondis -->
       <FilterBar 
         class="mb-6"
-        v-model:type="store.filters.type"
-        v-model:time="store.filters.time"
-        v-model:difficulty="store.filters.difficulty" 
+        @update:type="store.updateFilters({ type: $event })"
+        @update:time="store.updateFilters({ time: $event })"
+        @update:difficulty="store.updateFilters({ difficulty: $event })" 
       />
 
       <!-- Résultats avec compteur -->
@@ -59,7 +67,7 @@
           v-for="r in store.filtered" 
           :key="r.id" 
           :recipe="r"
-          @click="$router.push(`/recipes/${r.id}`)" 
+          @click="isMealSelectionMode ? addRecipeToPlan(r) : $router.push(`/recipes/${r.id}`)" 
         />
       </div>
 
@@ -79,13 +87,45 @@
 </template>
   
   <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, computed } from 'vue'
   import { useRecipesStore } from '~/stores/recipes'
   import { useAuthStore } from '~/stores/auth'
+  import { usePlannerStore } from '~/stores/planner'
 
   const store = useRecipesStore()
   const auth = useAuthStore()
+  const planner = usePlannerStore()
   const showCreateForm = ref(false)
+  
+  // Récupérer les paramètres de sélection de repas
+  const route = useRoute()
+  const selectedDate = computed(() => {
+    const dateParam = route.query.selectedDate as string
+    return dateParam ? new Date(dateParam) : null
+  })
+  
+  const selectedMeal = computed(() => {
+    return route.query.selectedMeal as 'lunch'|'dinner' | null
+  })
+  
+  const isMealSelectionMode = computed(() => {
+    return selectedDate.value && selectedMeal.value
+  })
+  
+  // Fonction pour ajouter une recette au planning
+  const addRecipeToPlan = async (recipe: any) => {
+    if (!selectedDate.value || !selectedMeal.value) return
+    
+    try {
+      // Sauvegarder en base de données avec la date spécifique
+      await planner.saveMealPlan(selectedDate.value, selectedMeal.value, recipe)
+      
+      // Rediriger vers le planning
+      navigateTo('/planner')
+    } catch (error) {
+      console.error('Erreur ajout recette au planning:', error)
+    }
+  }
 
   onMounted(async () => {
     // Charger les recettes depuis Supabase

@@ -64,7 +64,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAuthStore } from '~/stores/auth'
+// Corrigez l'import pour utiliser un chemin relatif correct
+import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
 const form = ref()

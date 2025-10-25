@@ -63,11 +63,27 @@
   </template>
   
   <script setup lang="ts">
+/* 
+Prompt quand possible
+
+Quand je clique sur une recette dans la page recipes, j'ai cette erreur et la recette ne s'ouvre pas. 
+de plus les boutons listes : type de plat, temps de préparationet Dificultés, ne fonctionnent pas, il ne se passe rien en cliquant dessus.
+
+Je souhaiterais également que sur la vue Menu il y ai l'option de voir les semaines précédentes et futures dans le planificateur.
+et que la vue calendrier affiche un calendrier du mois avec les noms des recettes choisies sur les jours si des recettes ont été sélectionnées 
+
+Dans la vue historique je souhaiterais que les 30 derniers jours soient transformés pour avoir un carroussel avec les 10 recettes les plus consomées de la plus consomée d'abord avec 3 repas visible à la fois. En dessous sous plus Ancien, qu'il y ait la même chose mais depuis le début de l'app.
+
+Dans toute l'application je souhaiterais qu'il n'y ait que Déjeuner et Dinner, le petit déjeuner doit être suprimé. 
+*/
+
+  // Import the correct type from the store (fix import/export issue)
   import type { Recipe } from '~/stores/recipes'
 
-  defineProps<{ recipe: Recipe }>()
-  defineEmits<{ (e: 'click'): void }>()
-  </script>
+  // Define the props and emits correctly
+  const props = defineProps<{ recipe: Recipe }>()
+  const emit = defineEmits<{ (e: 'click'): void }>()
+
 
 <style scoped>
 .recipe-card {

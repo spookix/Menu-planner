@@ -64,7 +64,11 @@
         </v-btn>
         
         <div v-if="error" class="text-center mb-4">
-          <v-alert type="error" variant="tonal" class="text-caption">
+          <v-alert 
+            :type="error.includes('réussie') || error.includes('vérifier') ? 'success' : 'error'" 
+            variant="tonal" 
+            class="text-caption"
+          >
             {{ error }}
           </v-alert>
         </div>
@@ -114,8 +118,16 @@ const handleSignup = async () => {
   error.value = ''
   
   try {
-    await auth.signUp(email.value, password.value, username.value)
-    // L'inscription est gérée par le store
+    const result = await auth.signUp(email.value, password.value, username.value)
+    
+    // Vérifier si l'utilisateur doit confirmer son email
+    if (result.user && !result.session) {
+      // Email de confirmation envoyé
+      error.value = 'Veuillez vérifier votre email et cliquer sur le lien de confirmation pour activer votre compte.'
+    } else if (result.session) {
+      // Connexion automatique réussie
+      error.value = 'Inscription réussie ! Vous êtes maintenant connecté.'
+    }
   } catch (err: any) {
     error.value = err.message || 'Erreur d\'inscription'
   } finally {

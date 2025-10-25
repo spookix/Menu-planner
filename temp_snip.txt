@@ -1,0 +1,35 @@
+        
+        const { data, error } = await supabase
+          .from('meal_plans')
+          .select(`
+            id,
+            date,
+            meal_type,
+          .eq('date', dateString)
+          .eq('meal_type', mealType)
+        
+        // Ajouter le nouveau repas
+        const { error } = await supabase
+          .from('meal_plans')
+          .insert({
+        // Ajouter le nouveau repas
+        const { error } = await supabase
+          .from('meal_plans')
+          .insert({
+            user_id: auth.userId,
+            date: dateString,
+            meal_type: mealType,
+        
+        if (error) throw error
+        
+        // Mettre à jour le plan local
+        this.updateMealPlans()
+      } catch (error: any) {
+        this.error = error.message
+        
+        if (error) throw error
+        
+        // Mettre à jour le plan local
+        this.updateMealPlans()
+      } catch (error: any) {
+        this.error = error.message

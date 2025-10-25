@@ -38,11 +38,14 @@ export const useAuthStore = defineStore('auth', {
         }
 
         // Écouter les changements d'authentification
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabase.auth.onAuthStateChange(async (event, session) => {
           if (event === 'SIGNED_IN' && session) {
             this.session = session
             this.user = session.user
             this.error = null
+            
+            // Créer le profil utilisateur s'il n'existe pas
+            await this.ensureUserProfile()
           } else if (event === 'SIGNED_OUT') {
             this.session = null
             this.user = null
@@ -129,8 +132,8 @@ export const useAuthStore = defineStore('auth', {
 
         if (error) throw error
 
+        // Maintenant que le RLS est désactivé, créer le profil directement
         if (data.user) {
-          // Créer le profil utilisateur
           const { error: profileError } = await supabase
             .from('user_profiles')
             .insert({
@@ -141,6 +144,7 @@ export const useAuthStore = defineStore('auth', {
 
           if (profileError) {
             console.error('Erreur création profil:', profileError)
+            // Ne pas faire échouer l'inscription si le profil ne peut pas être créé
           }
         }
 
@@ -211,6 +215,39 @@ export const useAuthStore = defineStore('auth', {
       } catch (error: any) {
         this.error = error.message
         throw error
+      }
+    },
+
+    // S'assurer que le profil utilisateur existe
+    async ensureUserProfile() {
+      if (!this.user) return
+
+      try {
+        // Vérifier si le profil existe déjà
+        const { data: existingProfile } = await supabase
+          .from('user_profiles')
+          .select('id')
+          .eq('id', this.user.id)
+          .single()
+
+        // Si le profil n'existe pas, le créer
+        if (!existingProfile) {
+          const username = this.user.user_metadata?.username || this.user.email?.split('@')[0] || 'Utilisateur'
+          
+          const { error } = await supabase
+            .from('user_profiles')
+            .insert({
+              id: this.user.id,
+              username: username,
+              full_name: username
+            })
+
+          if (error) {
+            console.error('Erreur création profil automatique:', error)
+          }
+        }
+      } catch (error) {
+        console.error('Erreur vérification profil:', error)
       }
     },
 

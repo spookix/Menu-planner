@@ -25,11 +25,11 @@ CREATE TABLE recipes (
 CREATE TABLE meal_plans (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  day INTEGER NOT NULL CHECK (day >= 0 AND day <= 6),
-  meal_type TEXT NOT NULL CHECK (meal_type IN ('breakfast', 'lunch', 'dinner')),
+  date DATE NOT NULL,
+  meal_type TEXT NOT NULL CHECK (meal_type IN ('lunch', 'dinner')),
   recipe_id UUID REFERENCES recipes(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE(user_id, day, meal_type)
+  UNIQUE(user_id, date, meal_type)
 );
 
 -- 3. Table des articles de courses
@@ -67,7 +67,7 @@ CREATE TABLE meal_history (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   recipe_id UUID REFERENCES recipes(id) ON DELETE CASCADE,
-  meal_type TEXT NOT NULL CHECK (meal_type IN ('breakfast', 'lunch', 'dinner')),
+  meal_type TEXT NOT NULL CHECK (meal_type IN ('lunch', 'dinner')),
   consumed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   rating INTEGER CHECK (rating >= 1 AND rating <= 5)
 );

@@ -29,7 +29,7 @@ export interface MealPlan {
   id: string
   user_id: string
   day: number // 0-6 (Dimanche-Samedi)
-  meal_type: 'breakfast' | 'lunch' | 'dinner'
+  meal_type: 'lunch' | 'dinner'
   recipe_id: string
   created_at?: string
 }

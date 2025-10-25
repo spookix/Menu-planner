@@ -1,6 +1,8 @@
-<template>
+  <template>
     <v-container class="pa-0">
-      <v-img :src="recipe?.img" height="260" cover />
+      <v-skeleton-loader v-if="loading" type="image, article" />
+      <template v-else-if="recipe">
+        <v-img :src="recipe?.img" height="260" cover />
       <div class="pa-4">
         <h1 class="text-h5 font-weight-bold mb-2">{{ recipe?.title }}</h1>
         <p class="text-body-2 text-medium-emphasis mb-2">{{ recipe?.subtitle }}</p>
@@ -29,31 +31,56 @@
         </v-card>
       </div>
   
-      <div class="position-fixed left-0 right-0 bottom-16 px-4">
-        <v-btn color="primary" size="large" block rounded="xl" @click="addToPlan">Ajouter au Plan</v-btn>
+        <div class="position-fixed left-0 right-0 bottom-16 px-4">
+          <v-btn color="primary" size="large" block rounded="xl" @click="addToPlan">Ajouter au Plan</v-btn>
+        </div>
+      </template>
+      <div v-else class="text-center py-8">
+        <v-icon size="64" color="error" class="mb-4">mdi-alert-circle</v-icon>
+        <h3 class="text-h5 font-weight-medium mb-2">Recette non trouvée</h3>
+        <p class="text-body-1 text-medium-emphasis">Cette recette n'existe pas ou a été supprimée</p>
+        <v-btn color="primary" @click="$router.push('/recipes')" class="mt-4">
+          Retour aux recettes
+        </v-btn>
       </div>
     </v-container>
   </template>
   
   <script setup lang="ts">
+  import { ref, onMounted } from 'vue'
   import { useRecipesStore } from '~/stores/recipes'
   import { usePlannerStore, type MealKey } from '~/stores/planner'
+  
   const route = useRoute()
   const recipes = useRecipesStore()
   const planner = usePlannerStore()
   const id = route.params.id as string
-  
-  const recipe = ref(await recipes.fetchOne(id))
-  const checked = ref((recipe.value?.ingredients ?? []).map(() => false))
-  
-  // simple: ajoute au premier créneau vide d’aujourd’hui, sinon au déjeuner
+
+  // Charger la recette spécifique depuis Supabase
+  const recipe = ref(null)
+  const loading = ref(true)
+  const checked = ref([])
+
+  onMounted(async () => {
+    try {
+      const recipeData = await recipes.loadRecipe(id)
+      recipe.value = recipeData
+      checked.value = (recipeData?.ingredients ?? []).map(() => false)
+    } catch (error) {
+      console.error('Erreur chargement recette:', error)
+    } finally {
+      loading.value = false
+    }
+  })
+
+  // simple: ajoute au premier créneau vide d'aujourd'hui, sinon au déjeuner
   const addToPlan = () => {
     const todayIdx = new Date().getDay(); // 0=Dimanche
     const di = (todayIdx + 6) % 7;
     // Correction : vérifier que planner.plan et planner.plan[di] existent
     let slot: MealKey = 'lunch';
     if (planner.plan && planner.plan[di]) {
-      slot = (['breakfast', 'lunch', 'dinner'] as MealKey[]).find(
+      slot = (['lunch', 'dinner'] as MealKey[]).find(
         m => planner.plan[di]?.[m] === null
       ) ?? 'lunch';
     }
