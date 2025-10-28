@@ -78,6 +78,12 @@ onMounted(async () => {
     mode.value = 'update'
   }
 
+  // Support du lien avec paramètres de requête (?type=recovery&code=...&email=...)
+  if (route.query && route.query.type === 'recovery' && typeof route.query.code === 'string') {
+    await initRecoveryFromQuery()
+    mode.value = 'update'
+  }
+
   // Récupérer l'email de l'utilisateur si la session recovery est active
   const { data: { user } } = await supabase.auth.getUser()
   if (user?.email) userEmail.value = user.email
@@ -101,6 +107,25 @@ async function initRecoverySessionFromURL(hash: string) {
       if (sessErr) throw sessErr
       if (data?.session?.user?.email) userEmail.value = data.session.user.email
     }
+  } catch (e: any) {
+    error.value = e.message || 'Lien de réinitialisation invalide ou expiré.'
+  }
+}
+
+// Initialise la session quand Supabase fournit un code en query string
+async function initRecoveryFromQuery() {
+  try {
+    const code = String(route.query.code || '')
+    const emailQ = String(route.query.email || '')
+    if (!code || !emailQ) return
+    const { data, error: verErr } = await supabase.auth.verifyOtp({
+      type: 'recovery',
+      token: code,
+      email: emailQ
+    })
+    if (verErr) throw verErr
+    if (data?.user?.email) userEmail.value = data.user.email
+    else userEmail.value = emailQ
   } catch (e: any) {
     error.value = e.message || 'Lien de réinitialisation invalide ou expiré.'
   }
