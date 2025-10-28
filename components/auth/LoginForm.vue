@@ -57,6 +57,17 @@
             Pas encore de compte ? S'inscrire
           </v-btn>
         </div>
+
+        <div class="text-center mt-2">
+          <v-btn
+            variant="text"
+            color="primary"
+            size="small"
+            @click="$router.push('/reset-password')"
+          >
+            Réinitialisation du mot de passe
+          </v-btn>
+        </div>
       </v-form>
     </v-card-text>
   </v-card>

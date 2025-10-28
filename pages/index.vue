@@ -48,7 +48,10 @@ const auth = useAuthStore()
         <h2 class="text-h4 font-weight-bold text-center mb-6">Fonctionnalités</h2>
         
         <div class="features-grid">
-          <div class="feature-card">
+          <div class="feature-card" role="button" tabindex="0"
+               @click="$router.push('/recipes')"
+               @keydown.enter.prevent="$router.push('/recipes')"
+               @keydown.space.prevent="$router.push('/recipes')">
             <v-icon size="48" color="primary" class="mb-3">mdi-book</v-icon>
             <h3 class="text-h6 font-weight-bold mb-2">Recettes</h3>
             <p class="text-body-2 text-medium-emphasis">
@@ -56,7 +59,10 @@ const auth = useAuthStore()
             </p>
           </div>
           
-          <div class="feature-card">
+          <div class="feature-card" role="button" tabindex="0"
+               @click="$router.push('/planner')"
+               @keydown.enter.prevent="$router.push('/planner')"
+               @keydown.space.prevent="$router.push('/planner')">
             <v-icon size="48" color="primary" class="mb-3">mdi-calendar</v-icon>
             <h3 class="text-h6 font-weight-bold mb-2">Planification</h3>
             <p class="text-body-2 text-medium-emphasis">
@@ -64,7 +70,10 @@ const auth = useAuthStore()
             </p>
           </div>
           
-          <div class="feature-card">
+          <div class="feature-card" role="button" tabindex="0"
+               @click="$router.push('/grocery')"
+               @keydown.enter.prevent="$router.push('/grocery')"
+               @keydown.space.prevent="$router.push('/grocery')">
             <v-icon size="48" color="primary" class="mb-3">mdi-cart</v-icon>
             <h3 class="text-h6 font-weight-bold mb-2">Liste de Courses</h3>
             <p class="text-body-2 text-medium-emphasis">
@@ -72,7 +81,10 @@ const auth = useAuthStore()
             </p>
           </div>
           
-          <div class="feature-card">
+          <div class="feature-card" role="button" tabindex="0"
+               @click="$router.push('/history')"
+               @keydown.enter.prevent="$router.push('/history')"
+               @keydown.space.prevent="$router.push('/history')">
             <v-icon size="48" color="primary" class="mb-3">mdi-clock</v-icon>
             <h3 class="text-h6 font-weight-bold mb-2">Historique</h3>
             <p class="text-body-2 text-medium-emphasis">
@@ -123,11 +135,17 @@ const auth = useAuthStore()
   text-align: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .feature-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.feature-card:focus-visible {
+  outline: 3px solid #007bff;
+  outline-offset: 2px;
 }
 
 .text-primary {

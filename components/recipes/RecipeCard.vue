@@ -161,6 +161,7 @@ Dans toute l'application je souhaiterais qu'il n'y ait que Déjeuner et Dinner, 
   line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2; /* standard property for compatibility */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -170,6 +171,7 @@ Dans toute l'application je souhaiterais qu'il n'y ait que Déjeuner et Dinner, 
   white-space: pre-line;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3; /* standard property for compatibility */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
