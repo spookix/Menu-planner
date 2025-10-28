@@ -44,23 +44,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { supabase } from '~/lib/supabase'
-import { useAuthStore } from '~/stores/auth'
 
-type Mode = 'request' | 'update'
-const auth = useAuthStore()
-const route = useRoute()
+const mode = ref<'request' | 'update'>('request')
+const userEmail = ref('')
+const error = ref('')
+const message = ref('')
 
-const mode = ref<Mode>('request')
+
 const email = ref('')
 const password = ref('')
 const password2 = ref('')
 const loading = ref(false)
-const message = ref('')
-const error = ref('')
-const userEmail = ref('')
 const requestForm = ref()
 const updateForm = ref()
 
@@ -72,20 +69,20 @@ const rules = {
 }
 
 onMounted(async () => {
-  const hash = typeof window !== 'undefined' ? window.location.hash : ''
-  // Lien Supabase sur Vercel arrive souvent sous forme de hash avec access_token
-  if (hash && (hash.includes('access_token=') || hash.includes('type=recovery'))) {
+  const url = new URL(window.location.href)
+  const hash = url.hash ?? ''
+
+  const hasRecoveryHash  = hash.includes('access_token=') || hash.includes('type=recovery')
+  const hasRecoveryQuery = url.searchParams.get('type') === 'recovery' && !!url.searchParams.get('code')
+
+  if (hasRecoveryHash || hasRecoveryQuery) mode.value = 'update'
+
+  if (hasRecoveryHash) {
     await initRecoverySessionFromURL(hash)
-    mode.value = 'update'
-  }
-
-  // Support du lien avec paramètres de requête (?type=recovery&code=...&email=...)
-  if (route.query && route.query.type === 'recovery' && typeof route.query.code === 'string') {
+  } else if (hasRecoveryQuery) {
     await initRecoveryFromQuery()
-    mode.value = 'update'
   }
 
-  // Récupérer l'email de l'utilisateur si la session recovery est active
   const { data: { user } } = await supabase.auth.getUser()
   if (user?.email) userEmail.value = user.email
 
@@ -97,40 +94,51 @@ onMounted(async () => {
   })
 })
 
+
+
 // Initialise la session de récupération depuis les tokens du lien
 async function initRecoverySessionFromURL(hash: string) {
   try {
     const params = new URLSearchParams(hash.replace(/^#/, ''))
     const access_token = params.get('access_token') || ''
     const refresh_token = params.get('refresh_token') || ''
+
     if (access_token && refresh_token) {
-      const { data, error: sessErr } = await supabase.auth.setSession({ access_token, refresh_token })
+      const { error: sessErr } = await supabase.auth.setSession({ access_token, refresh_token })
       if (sessErr) throw sessErr
-      if (data?.session?.user?.email) userEmail.value = data.session.user.email
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user?.email) userEmail.value = user.email
+    } else {
+      throw new Error('Lien incomplet : token manquant.')
     }
   } catch (e: any) {
     error.value = e.message || 'Lien de réinitialisation invalide ou expiré.'
   }
 }
 
+
 // Initialise la session quand Supabase fournit un code en query string
 async function initRecoveryFromQuery() {
   try {
-    const code = String(route.query.code || '')
-    const emailQ = String(route.query.email || '')
-    if (!code || !emailQ) return
+    const url = new URL(window.location.href)
+    const code = String(url.searchParams.get('code') || '')
+    if (!code) throw new Error('Code manquant.')
+
     const { data, error: verErr } = await supabase.auth.verifyOtp({
       type: 'recovery',
-      token: code,
-      email: emailQ
+      token_hash: code,       // <-- CORRECT
     })
     if (verErr) throw verErr
-    if (data?.user?.email) userEmail.value = data.user.email
-    else userEmail.value = emailQ
+
+    // Récupère l’email pour affichage
+    const emailFromUser = data?.user?.email
+    const urlEmail = new URL(window.location.href).searchParams.get('email') || ''
+    userEmail.value = emailFromUser || urlEmail || ''
   } catch (e: any) {
     error.value = e.message || 'Lien de réinitialisation invalide ou expiré.'
   }
 }
+
 
 const sendResetEmail = async () => {
   const { valid } = await requestForm.value.validate()
@@ -139,7 +147,8 @@ const sendResetEmail = async () => {
   message.value = ''
   error.value = ''
   try {
-    await auth.resetPassword(email.value)
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.value)
+    if (resetError) throw resetError
     message.value = 'Un email de réinitialisation a été envoyé si le compte existe.'
   } catch (e: any) {
     error.value = e.message || 'Erreur lors de l’envoi du lien.'
@@ -149,22 +158,19 @@ const sendResetEmail = async () => {
 }
 
 const updatePassword = async () => {
-  // Validation du formulaire et cohérence des mots de passe
   const { valid } = await updateForm.value.validate()
   if (!valid) return
-  if (password.value !== password2.value) {
-    error.value = 'Les mots de passe ne correspondent pas'
-    return
-  }
-  loading.value = true
-  message.value = ''
-  error.value = ''
+  loading.value = true; error.value = ''; message.value = ''
+
   try {
-    // Si pas de session (ex: tokens pas encore appliqués), tenter de l'initialiser depuis l'URL
-    const { data: sessionCheck } = await supabase.auth.getSession()
-    if (!sessionCheck.session && typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
-      await initRecoverySessionFromURL(window.location.hash)
+    const { data: s } = await supabase.auth.getSession()
+    if (!s.session && window.location.hash.includes('access_token=')) {
+      const p = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+      const at = p.get('access_token') || ''
+      const rt = p.get('refresh_token') || ''
+      if (at && rt) await supabase.auth.setSession({ access_token: at, refresh_token: rt })
     }
+
     const { error: updError } = await supabase.auth.updateUser({ password: password.value })
     if (updError) throw updError
     message.value = 'Mot de passe mis à jour avec succès.'
@@ -175,6 +181,8 @@ const updatePassword = async () => {
     loading.value = false
   }
 }
+
+
 </script>
 
 <style scoped>
