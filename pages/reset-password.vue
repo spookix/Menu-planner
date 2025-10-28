@@ -73,7 +73,8 @@ const rules = {
 
 onMounted(async () => {
   const hash = typeof window !== 'undefined' ? window.location.hash : ''
-  if (hash && hash.includes('type=recovery')) {
+  // Lien Supabase sur Vercel arrive souvent sous forme de hash avec access_token
+  if (hash && (hash.includes('access_token=') || hash.includes('type=recovery'))) {
     await initRecoverySessionFromURL(hash)
     mode.value = 'update'
   }
