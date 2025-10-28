@@ -74,6 +74,7 @@ const rules = {
 onMounted(async () => {
   const hash = typeof window !== 'undefined' ? window.location.hash : ''
   if (hash && hash.includes('type=recovery')) {
+    await initRecoverySessionFromURL(hash)
     mode.value = 'update'
   }
 
@@ -88,6 +89,22 @@ onMounted(async () => {
     }
   })
 })
+
+// Initialise la session de récupération depuis les tokens du lien
+async function initRecoverySessionFromURL(hash: string) {
+  try {
+    const params = new URLSearchParams(hash.replace(/^#/, ''))
+    const access_token = params.get('access_token') || ''
+    const refresh_token = params.get('refresh_token') || ''
+    if (access_token && refresh_token) {
+      const { data, error: sessErr } = await supabase.auth.setSession({ access_token, refresh_token })
+      if (sessErr) throw sessErr
+      if (data?.session?.user?.email) userEmail.value = data.session.user.email
+    }
+  } catch (e: any) {
+    error.value = e.message || 'Lien de réinitialisation invalide ou expiré.'
+  }
+}
 
 const sendResetEmail = async () => {
   const { valid } = await requestForm.value.validate()
@@ -117,6 +134,11 @@ const updatePassword = async () => {
   message.value = ''
   error.value = ''
   try {
+    // Si pas de session (ex: tokens pas encore appliqués), tenter de l'initialiser depuis l'URL
+    const { data: sessionCheck } = await supabase.auth.getSession()
+    if (!sessionCheck.session && typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
+      await initRecoverySessionFromURL(window.location.hash)
+    }
     const { error: updError } = await supabase.auth.updateUser({ password: password.value })
     if (updError) throw updError
     message.value = 'Mot de passe mis à jour avec succès.'
