@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <v-container class="py-4 history-container">
     <!-- Header avec titre -->
     <div class="text-center mb-8">
@@ -147,10 +147,10 @@ const topRecentRecipes = [
   { id: '2', title: 'Soupe de Lentilles', img: 'https://picsum.photos/200?2', consumptionCount: 6, lastConsumed: '2024-01-14' },
   { id: '3', title: 'Skewers Caprese', img: 'https://picsum.photos/200?3', consumptionCount: 5, lastConsumed: '2024-01-13' },
   { id: '4', title: 'Mousse Chocolat Avocat', img: 'https://picsum.photos/200?4', consumptionCount: 4, lastConsumed: '2024-01-12' },
-  { id: '5', title: 'Pâtes Carbonara', img: 'https://picsum.photos/200?5', consumptionCount: 4, lastConsumed: '2024-01-11' },
+  { id: '5', title: 'PÃ¢tes Carbonara', img: 'https://picsum.photos/200?5', consumptionCount: 4, lastConsumed: '2024-01-11' },
   { id: '6', title: 'Risotto aux Champignons', img: 'https://picsum.photos/200?6', consumptionCount: 3, lastConsumed: '2024-01-10' },
   { id: '7', title: 'Tartare de Saumon', img: 'https://picsum.photos/200?7', consumptionCount: 3, lastConsumed: '2024-01-09' },
-  { id: '8', title: 'Ratatouille Provençale', img: 'https://picsum.photos/200?8', consumptionCount: 2, lastConsumed: '2024-01-08' },
+  { id: '8', title: 'Ratatouille ProvenÃ§ale', img: 'https://picsum.photos/200?8', consumptionCount: 2, lastConsumed: '2024-01-08' },
   { id: '9', title: 'Couscous Marocain', img: 'https://picsum.photos/200?9', consumptionCount: 2, lastConsumed: '2024-01-07' },
   { id: '10', title: 'Tarte Tatin', img: 'https://picsum.photos/200?10', consumptionCount: 1, lastConsumed: '2024-01-06' }
 ]
@@ -159,12 +159,12 @@ const topRecentRecipes = [
 const topAllTimeRecipes = [
   { id: '1', title: 'Salade Quinoa Méditerranéenne', img: 'https://picsum.photos/200?1', totalConsumption: 45, firstConsumed: '2023-06-15' },
   { id: '2', title: 'Soupe de Lentilles', img: 'https://picsum.photos/200?2', totalConsumption: 38, firstConsumed: '2023-05-20' },
-  { id: '3', title: 'Pâtes Carbonara', img: 'https://picsum.photos/200?5', totalConsumption: 32, firstConsumed: '2023-04-10' },
+  { id: '3', title: 'PÃ¢tes Carbonara', img: 'https://picsum.photos/200?5', totalConsumption: 32, firstConsumed: '2023-04-10' },
   { id: '4', title: 'Risotto aux Champignons', img: 'https://picsum.photos/200?6', totalConsumption: 28, firstConsumed: '2023-07-05' },
   { id: '5', title: 'Skewers Caprese', img: 'https://picsum.photos/200?3', totalConsumption: 25, firstConsumed: '2023-08-12' },
   { id: '6', title: 'Tartare de Saumon', img: 'https://picsum.photos/200?7', totalConsumption: 22, firstConsumed: '2023-09-18' },
   { id: '7', title: 'Mousse Chocolat Avocat', img: 'https://picsum.photos/200?4', totalConsumption: 20, firstConsumed: '2023-10-03' },
-  { id: '8', title: 'Ratatouille Provençale', img: 'https://picsum.photos/200?8', totalConsumption: 18, firstConsumed: '2023-11-15' },
+  { id: '8', title: 'Ratatouille ProvenÃ§ale', img: 'https://picsum.photos/200?8', totalConsumption: 18, firstConsumed: '2023-11-15' },
   { id: '9', title: 'Couscous Marocain', img: 'https://picsum.photos/200?9', totalConsumption: 15, firstConsumed: '2023-12-01' },
   { id: '10', title: 'Tarte Tatin', img: 'https://picsum.photos/200?10', totalConsumption: 12, firstConsumed: '2024-01-02' }
 ]
@@ -173,7 +173,7 @@ const topAllTimeRecipes = [
 const recentStartIndex = ref(0)
 const allTimeStartIndex = ref(0)
 
-// Recettes visibles dans les carrousels (3 à la fois)
+// Recettes visibles dans les carrousels (3 Ã  la fois)
 const visibleRecentRecipes = computed(() => 
   topRecentRecipes.slice(recentStartIndex.value, recentStartIndex.value + 3)
 )

@@ -1,5 +1,5 @@
 ﻿import { defineStore } from 'pinia'
-import type { Recipe } from './recipes'
+import type { Recipe } from '~/lib/supabase'
 import { supabase } from '~/lib/supabase'
 import { useAuthStore } from './auth'
 
@@ -46,6 +46,8 @@ export const usePlannerStore = defineStore('planner', {
   actions: {
     setWeekStart(date: Date) {
       this.weekStart = toWeekStart(date)
+      // Recompute in-memory week plan for the new week
+      this.updateMealPlans()
     },
     clearSlot(di: number, meal: MealKey) {
       if (this.plan[di]) this.plan[di][meal] = null

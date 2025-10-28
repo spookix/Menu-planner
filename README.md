@@ -1,18 +1,18 @@
-# 🍽️ Menu Planner
+﻿# ðŸ½ï¸ Menu Planner
 
 Une application moderne de planification de repas construite avec Nuxt.js, Vuetify et Supabase.
 
-## ✨ Fonctionnalités
+## âœ¨ Fonctionnalités
 
-- 🔐 **Authentification complète** avec Supabase Auth
-- 📚 **Gestion des recettes** - Création, édition, recherche et filtrage
-- 📅 **Planificateur de repas** - Organisation de la semaine
-- 🛒 **Liste de courses** - Génération automatique depuis les plans
-- 📊 **Historique** - Suivi des habitudes alimentaires
-- 🌍 **Interface en français** - Expérience utilisateur localisée
-- 📱 **Design responsive** - Optimisé pour tous les appareils
+- ðŸ” **Authentification complÃ¨te** avec Supabase Auth
+- ðŸ“š **Gestion des recettes** - Création, édition, recherche et filtrage
+- ðŸ“… **Planificateur de repas** - Organisation de la semaine
+- ðŸ›’ **Liste de courses** - Génération automatique depuis les plans
+- ðŸ“Š **Historique** - Suivi des habitudes alimentaires
+- ðŸŒ **Interface en franÃ§ais** - Expérience utilisateur localisée
+- ðŸ“± **Design responsive** - Optimisé pour tous les appareils
 
-## 🚀 Technologies
+## ðŸš€ Technologies
 
 - **Frontend** : Nuxt.js 4, Vue.js 3, Vuetify 3
 - **Backend** : Supabase (PostgreSQL, Auth, RLS)
@@ -20,13 +20,13 @@ Une application moderne de planification de repas construite avec Nuxt.js, Vueti
 - **Styling** : CSS moderne avec animations
 - **Icons** : Material Design Icons
 
-## 📋 Prérequis
+## ðŸ“‹ Prérequis
 
 - Node.js 18+ 
 - npm ou yarn
 - Compte Supabase
 
-## 🛠️ Installation
+## ðŸ› ï¸ Installation
 
 1. **Cloner le repository**
    ```bash
@@ -56,7 +56,7 @@ Une application moderne de planification de repas construite avec Nuxt.js, Vueti
    npm run dev
    ```
 
-## 🗄️ Base de données
+## ðŸ—„ï¸ Base de données
 
 Le schéma inclut :
 - `recipes` - Recettes de cuisine
@@ -66,13 +66,13 @@ Le schéma inclut :
 - `favorites` - Recettes favorites
 - `meal_history` - Historique des repas
 
-## 🔒 Sécurité
+## ðŸ”’ Sécurité
 
 - **Row Level Security (RLS)** activé sur toutes les tables
 - **Authentification** requise pour les opérations sensibles
-- **Politiques d'accès** granulaires par utilisateur
+- **Politiques d'accÃ¨s** granulaires par utilisateur
 
-## 📱 Utilisation
+## ðŸ“± Utilisation
 
 1. **Créer un compte** ou se connecter
 2. **Parcourir les recettes** existantes
@@ -81,7 +81,7 @@ Le schéma inclut :
 5. **Générer la liste de courses** automatiquement
 6. **Suivre l'historique** des repas
 
-## 🚀 Déploiement
+## ðŸš€ Déploiement
 
 ### Supabase Edge Functions (Gratuit)
 ```bash
@@ -101,7 +101,7 @@ npm run build
 npm run generate
 ```
 
-## 🤝 Contribution
+## ðŸ¤ Contribution
 
 1. Fork le projet
 2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
@@ -109,11 +109,12 @@ npm run generate
 4. Push vers la branche (`git push origin feature/AmazingFeature`)
 5. Ouvrir une Pull Request
 
-## 📄 Licence
+## ðŸ“„ Licence
 
 Ce projet est sous licence. Voir le fichier `LICENSE` pour plus de détails.
 
 
 ---
 
-**Menu Planner** - Planifiez vos repas avec style ! 🎉
+**Menu Planner** - Planifiez vos repas avec style ! ðŸŽ‰
+

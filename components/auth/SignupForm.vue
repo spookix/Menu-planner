@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <v-card class="signup-card" max-width="400" elevation="8" rounded="xl">
     <v-card-title class="text-center text-h5 font-weight-bold text-primary py-6">
       Inscription
@@ -78,9 +78,9 @@
             variant="text"
             color="primary"
             size="small"
-            @click="$emit('switchToLogin')"
+            @click="emit('switchToLogin')"
           >
-            Déjà un compte ? Se connecter
+            DéjÃ  un compte ? Se connecter
           </v-btn>
         </div>
       </v-form>
@@ -104,10 +104,10 @@ const confirmPassword = ref('')
 
 const rules = {
   required: (v: string) => !!v || 'Ce champ est requis',
-  username: (v: string) => v.length >= 3 || 'Minimum 3 caractères',
+  username: (v: string) => v.length >= 3 || 'Minimum 3 caractÃ¨res',
   email: (v: string) => /.+@.+\..+/.test(v) || 'Email invalide',
-  minLength: (v: string) => v.length >= 6 || 'Minimum 6 caractères',
-  confirmPassword: computed(() => (v: string) => v === password.value || 'Les mots de passe ne correspondent pas')
+  minLength: (v: string) => v.length >= 6 || 'Minimum 6 caractÃ¨res',
+  confirmPassword: (v: string) => v === password.value || 'Les mots de passe ne correspondent pas'
 }
 
 const handleSignup = async () => {
@@ -126,7 +126,7 @@ const handleSignup = async () => {
       error.value = 'Veuillez vérifier votre email et cliquer sur le lien de confirmation pour activer votre compte.'
     } else if (result.session) {
       // Connexion automatique réussie
-      error.value = 'Inscription réussie ! Vous êtes maintenant connecté.'
+      error.value = 'Inscription réussie ! Vous Ãªtes maintenant connecté.'
     }
   } catch (err: any) {
     error.value = err.message || 'Erreur d\'inscription'
@@ -135,7 +135,7 @@ const handleSignup = async () => {
   }
 }
 
-defineEmits<{ (e: 'switchToLogin'): void }>()
+const emit = defineEmits<{ (e: 'switchToLogin'): void }>()
 </script>
 
 <style scoped>
@@ -149,3 +149,4 @@ defineEmits<{ (e: 'switchToLogin'): void }>()
   color: #007bff !important;
 }
 </style>
+

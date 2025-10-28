@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+﻿import { defineStore } from 'pinia'
 import { usePlannerStore } from './planner'
 
 export interface GroceryItem { label: string; done: boolean }
@@ -11,14 +11,14 @@ export const useGroceryStore = defineStore('grocery', {
       const planner = usePlannerStore()
       // simplifié : parse par mots-clés catégorie
       const cats: Record<string,string[]> = {
-        Produce: ['tomate','salade','oignon','carotte','avocat','épinard','poivron','olive','citron'],
-        Dairy: ['lait','yaourt','fromage','feta','mozzarella'],
-        Pantry: ['pâtes','riz','quinoa','pois chiches','lentilles','huile','pesto']
+        'Fruits et légumes': ['tomate','salade','oignon','carotte','avocat','épinard','poivron','olive','citron'],
+        'Produits laitiers': ['lait','yaourt','fromage','feta','mozzarella'],
+        'Épicerie': ['pÃ¢tes','riz','quinoa','pois chiches','lentilles','huile','pesto']
       }
       const bucket: Record<string, Set<string>> = Object.fromEntries(Object.keys(cats).map(c=>[c,new Set<string>()]))
       const push = (label:string) => {
         const lower = label.toLowerCase()
-        const cat = Object.entries(cats).find(([, keys]) => keys.some(k => lower.includes(k)))?.[0] ?? 'Pantry'
+        const cat = Object.entries(cats).find(([, keys]) => keys.some(k => lower.includes(k)))?.[0] ?? 'Épicerie'
         if (bucket[cat]) {
           bucket[cat].add(label)
         } else {
@@ -33,3 +33,8 @@ export const useGroceryStore = defineStore('grocery', {
     }
   }
 })
+
+
+
+
+

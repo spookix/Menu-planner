@@ -1,5 +1,5 @@
--- Script pour créer une fonction d'inscription complète
--- À exécuter dans l'éditeur SQL de Supabase
+﻿-- Script pour créer une fonction d'inscription complÃ¨te
+-- Ã€ exécuter dans l'éditeur SQL de Supabase
 
 -- Fonction pour créer un utilisateur avec son profil
 CREATE OR REPLACE FUNCTION public.signup_user(
@@ -55,7 +55,7 @@ BEGIN
   result := json_build_object(
     'success', true,
     'user_id', new_user_id,
-    'message', 'Utilisateur créé avec succès'
+    'message', 'Utilisateur créé avec succÃ¨s'
   );
 
   RETURN result;
@@ -72,4 +72,5 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Permettre l'exécution de la fonction
 GRANT EXECUTE ON FUNCTION public.signup_user TO anon;
 GRANT EXECUTE ON FUNCTION public.signup_user TO authenticated;
+
 

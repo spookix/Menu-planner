@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <v-card class="login-card" max-width="400" elevation="8" rounded="xl">
     <v-card-title class="text-center text-h5 font-weight-bold text-primary py-6">
       Connexion
@@ -77,7 +77,7 @@ const password = ref('')
 
 const rules = {
   required: (v: string) => !!v || 'Ce champ est requis',
-  minLength: (v: string) => v.length >= 4 || 'Minimum 6 caractères'
+  minLength: (v: string) => v.length >= 4 || 'Minimum 6 caractÃ¨res'
 }
 
 const handleLogin = async () => {
@@ -111,3 +111,4 @@ defineEmits<{ (e: 'switchToSignup'): void }>()
   color: #007bff !important;
 }
 </style>
+

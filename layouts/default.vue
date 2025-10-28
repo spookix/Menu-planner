@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <v-app>
     <AppHeader />
     
@@ -24,7 +24,16 @@ onMounted(async () => {
 
 <style>
 .v-main {
-  padding-top: 64px; /* Hauteur de l'en-tête */
+  padding-top: 64px; /* Hauteur de l'en-tÃªte */
   padding-bottom: 80px; /* Hauteur de la navigation du bas */
 }
 </style>
+
+<style>
+/* Override paddings to respect bottom navigation height and safe area */
+.v-main {
+  padding-top: var(--header-height) !important;
+  padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px)) !important;
+}
+</style>
+

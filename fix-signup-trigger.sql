@@ -1,5 +1,5 @@
--- Script pour créer automatiquement le profil utilisateur lors de l'inscription
--- À exécuter dans l'éditeur SQL de Supabase
+﻿-- Script pour créer automatiquement le profil utilisateur lors de l'inscription
+-- Ã€ exécuter dans l'éditeur SQL de Supabase
 
 -- Supprimer les politiques existantes pour user_profiles
 DROP POLICY IF EXISTS "Users can view own profile" ON user_profiles;
@@ -39,6 +39,7 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
--- Permettre à la fonction d'insérer dans user_profiles
+-- Permettre Ã  la fonction d'insérer dans user_profiles
 GRANT INSERT ON public.user_profiles TO postgres;
 GRANT USAGE ON SCHEMA public TO postgres;
+

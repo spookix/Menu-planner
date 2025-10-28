@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+﻿import { defineStore } from 'pinia'
 import { supabase } from '~/lib/supabase'
 import type { User, Session } from '@supabase/supabase-js'
 
@@ -37,7 +37,7 @@ export const useAuthStore = defineStore('auth', {
           this.user = session.user
         }
 
-        // Écouter les changements d'authentification
+        // Ã‰couter les changements d'authentification
         supabase.auth.onAuthStateChange(async (event, session) => {
           if (event === 'SIGNED_IN' && session) {
             this.session = session
@@ -71,7 +71,7 @@ export const useAuthStore = defineStore('auth', {
           password: password
         })
 
-        // Si ça ne marche pas, essayer avec le pseudo
+        // Si Ã§a ne marche pas, essayer avec le pseudo
         if (error && emailOrUsername.includes('@') === false) {
           // Chercher l'utilisateur par pseudo dans user_profiles
           const { data: profileData } = await supabase
@@ -144,7 +144,7 @@ export const useAuthStore = defineStore('auth', {
 
           if (profileError) {
             console.error('Erreur création profil:', profileError)
-            // Ne pas faire échouer l'inscription si le profil ne peut pas être créé
+            // Ne pas faire échouer l'inscription si le profil ne peut pas Ãªtre créé
           }
         }
 
@@ -194,7 +194,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    // Mettre à jour le profil utilisateur
+    // Mettre Ã  jour le profil utilisateur
     async updateProfile(updates: { username?: string; full_name?: string; avatar_url?: string }) {
       try {
         if (!this.user) throw new Error('Utilisateur non connecté')
@@ -206,7 +206,7 @@ export const useAuthStore = defineStore('auth', {
 
         if (error) throw error
 
-        // Mettre à jour les métadonnées de l'utilisateur
+        // Mettre Ã  jour les métadonnées de l'utilisateur
         const { error: authError } = await supabase.auth.updateUser({
           data: updates
         })
@@ -223,7 +223,7 @@ export const useAuthStore = defineStore('auth', {
       if (!this.user) return
 
       try {
-        // Vérifier si le profil existe déjà
+        // Vérifier si le profil existe déjÃ 
         const { data: existingProfile } = await supabase
           .from('user_profiles')
           .select('id')
@@ -257,3 +257,4 @@ export const useAuthStore = defineStore('auth', {
     }
   }
 })
+

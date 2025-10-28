@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <v-container class="py-4 planner-container">
       <!-- Header avec titre et bouton d'ajout -->
       <div class="d-flex align-center justify-space-between mb-6">
@@ -80,7 +80,19 @@
             {{ items.length }} repas planifiés
           </div>
         </div>
-        <PlannerList :items="items" />
+        <div class="week-list">
+          <div v-for="i in 7" :key="i" class="week-day">
+            <div class="week-day-header">{{ formatDayWithDate(i - 1) }}</div>
+            <div class="week-meal-line">
+              <span class="label">Midi:</span>
+              <span class="value ellipsis">{{ planner.plan?.[i - 1]?.lunch?.title || '—' }}</span>
+            </div>
+            <div class="week-meal-line">
+              <span class="label">Soir:</span>
+              <span class="value ellipsis">{{ planner.plan?.[i - 1]?.dinner?.title || '—' }}</span>
+            </div>
+          </div>
+        </div>
       </div>
   
       <div v-else class="calendar-view">
@@ -111,7 +123,7 @@
         <!-- Calendrier mensuel -->
         <v-card class="calendar-card" elevation="2">
           <v-card-text class="pa-0">
-            <!-- En-têtes des jours -->
+            <!-- En-tÃªtes des jours -->
             <div class="calendar-header">
               <div 
                 v-for="day in weekDays" 
@@ -141,7 +153,7 @@
                     <v-menu location="top" offset="8">
                       <template #activator="{ props }">
                         <div v-bind="props" class="meal-content">
-                          {{ day.meals.find(m => m.type === 'lunch')?.title }}
+                          <span class="meal-title">{{ day.meals.find(m => m.type === 'lunch')?.title }}</span>
                           <v-icon size="12" class="ml-1">mdi-chevron-down</v-icon>
                         </div>
                       </template>
@@ -150,7 +162,7 @@
                           <v-icon start>mdi-eye</v-icon>
                           Consulter
                         </v-list-item>
-                        <v-list-item @click="modifyDate(day.date, 'lunch')">
+                        <v-list-item @click="openMoveDialog(day.date, 'lunch')">
                           <v-icon start>mdi-calendar-edit</v-icon>
                           Modifier la date
                         </v-list-item>
@@ -184,7 +196,7 @@
                     <v-menu location="top" offset="8">
                       <template #activator="{ props }">
                         <div v-bind="props" class="meal-content">
-                          {{ day.meals.find(m => m.type === 'dinner')?.title }}
+                          <span class="meal-title">{{ day.meals.find(m => m.type === 'dinner')?.title }}</span>
                           <v-icon size="12" class="ml-1">mdi-chevron-down</v-icon>
                         </div>
                       </template>
@@ -193,7 +205,7 @@
                           <v-icon start>mdi-eye</v-icon>
                           Consulter
                         </v-list-item>
-                        <v-list-item @click="modifyDate(day.date, 'dinner')">
+                        <v-list-item @click="openMoveDialog(day.date, 'dinner')">
                           <v-icon start>mdi-calendar-edit</v-icon>
                           Modifier la date
                         </v-list-item>
@@ -226,6 +238,45 @@
             </div>
           </v-card-text>
         </v-card>
+        <!-- Dialog: Déplacer un repas -->
+        <v-dialog v-model="moveDialog" max-width="480">
+          <v-card rounded="xl">
+            <v-card-title class="text-h6 font-weight-bold">
+              Déplacer le repas
+            </v-card-title>
+            <v-card-text>
+              <div v-if="currentRecipeToMove" class="mb-4">
+                <div class="text-body-1 mb-2">
+                  Sélectionnez la date et le repas cible pour déplacer « {{ currentRecipeToMove.title }} ».
+                </div>
+                <v-text-field
+                  v-model="moveTargetDate"
+                  type="date"
+                  label="Date cible"
+                  variant="outlined"
+                  rounded="lg"
+                  class="mb-4"
+                />
+                <v-btn-toggle v-model="moveTargetMeal" divided rounded="xl" class="mb-2">
+                  <v-btn value="lunch">Midi</v-btn>
+                  <v-btn value="dinner">Soir</v-btn>
+                </v-btn-toggle>
+                <div v-if="moveTargetDate && moveTargetMeal" class="mt-2">
+                  <v-alert type="warning" variant="tonal" v-if="targetOccupiedRecipe">
+                    Le créneau est occupé par « {{ targetOccupiedRecipe.title }} ». Remplacer par « {{ currentRecipeToMove.title }} » ?
+                  </v-alert>
+                  <v-alert type="info" variant="tonal" v-else>
+                    Attribuer « {{ currentRecipeToMove.title }} » au {{ moveTargetMeal === 'lunch' ? 'midi' : 'soir' }} du {{ new Date(moveTargetDate).toLocaleDateString('fr-FR') }} ?
+                  </v-alert>
+                </div>
+              </div>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+              <v-btn variant="text" @click="moveDialog = false">Annuler</v-btn>
+              <v-btn color="primary" :disabled="!moveTargetDate || !moveTargetMeal" @click="confirmMove">Confirmer</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </div>
     </v-container>
   </template>
@@ -238,6 +289,29 @@
   const tab = ref<'week'|'calendar'>('week')
   const currentMonth = ref(new Date())
   const selectedMealSlot = ref<{date: Date, meal: 'lunch'|'dinner'} | null>(null)
+  // Déplacement d\'un repas (dialog)
+  const moveDialog = ref(false)
+  const moveFrom = ref<{ date: Date; meal: 'lunch'|'dinner' } | null>(null)
+  const moveTargetDate = ref<string>('') // format YYYY-MM-DD
+  const moveTargetMeal = ref<'lunch'|'dinner'|null>(null)
+  const toDateKey2 = (d: Date) => {
+    const y = d.getFullYear()
+    const m = (d.getMonth() + 1).toString().padStart(2, '0')
+    const day = d.getDate().toString().padStart(2, '0')
+    return `${y}-${m}-${day}`
+  }
+  const parseDateInput = (s: string): Date | null => {
+    const parts = s.split('-')
+    if (parts.length !== 3) return null
+    const y = Number(parts[0]); const m = Number(parts[1]); const d = Number(parts[2])
+    if (Number.isNaN(y) || Number.isNaN(m) || Number.isNaN(d)) return null
+    return new Date(y, m - 1, d)
+  }
+  const getRecipeAt = (date: Date, meal: 'lunch'|'dinner') => {
+    const key = toDateKey2(date)
+    const mp = planner.mealPlans.find(mp => mp.date === key && mp.meal_type === meal)
+    return mp?.recipe
+  }
   
   // Charger les plans de repas au montage
   onMounted(async () => {
@@ -249,7 +323,7 @@
     await planner.loadMealPlans()
   }
   
-  // Écouter les changements d'onglet pour recharger les données
+  // Ã‰couter les changements d'onglet pour recharger les données
   watch(tab, async (newTab) => {
     if (newTab === 'calendar') {
       await refreshPlans()
@@ -264,7 +338,7 @@
   // Fonction pour sélectionner un créneau de repas
   const selectMealSlot = (date: Date, meal: 'lunch'|'dinner') => {
     selectedMealSlot.value = { date, meal }
-    // Rediriger vers les recettes avec les paramètres de sélection
+    // Rediriger vers les recettes avec les paramÃ¨tres de sélection
     navigateTo(`/recipes?selectedDate=${date.toISOString()}&selectedMeal=${meal}`)
   }
   
@@ -275,6 +349,50 @@
     }
   }
   
+  const openMoveDialog = (date: Date, meal: 'lunch'|'dinner') => {
+    moveFrom.value = { date, meal }
+    moveTargetDate.value = ''
+    moveTargetMeal.value = null
+    moveDialog.value = true
+  }
+
+  const targetOccupiedRecipe = computed(() => {
+    if (!moveTargetDate.value || !moveTargetMeal.value) return null
+    const targetDate = parseDateInput(moveTargetDate.value)
+    if (!targetDate) return null
+    const key = toDateKey2(targetDate)
+    const mp = planner.mealPlans.find(mp => mp.date === key && mp.meal_type === moveTargetMeal.value)
+    return mp?.recipe || null
+  })
+
+  const currentRecipeToMove = computed(() => {
+    const from = moveFrom.value
+    if (!from) return null
+    const key = toDateKey2(from.date)
+    const mp = planner.mealPlans.find(mp => mp.date === key && mp.meal_type === from.meal)
+    return mp?.recipe || null
+  })
+  const confirmMove = async () => {
+    try {
+      if (!moveFrom.value || !moveTargetDate.value || !moveTargetMeal.value) return
+      const from = moveFrom.value
+      const targetDate = parseDateInput(moveTargetDate.value)
+      if (!targetDate) return
+      const recipe = currentRecipeToMove.value
+      if (!recipe) return
+      await planner.saveMealPlan(targetDate, moveTargetMeal.value, recipe)
+      const sameDate = toDateKey2(targetDate) === toDateKey2(from.date)
+      const sameMeal = moveTargetMeal.value === from.meal
+      if (!(sameDate && sameMeal)) {
+        await planner.removeMealPlan(from.date, from.meal)
+      }
+      await refreshPlans()
+    } catch (e) {
+      console.error('Erreur déplacement repas:', e)
+    } finally {
+      moveDialog.value = false
+    }
+  }
   const modifyDate = (date: Date, meal: 'lunch'|'dinner') => {
     // TODO: Implémenter la modification de date
     console.log('Modifier la date pour:', date, meal)
@@ -347,7 +465,7 @@
       
       // Récupérer les repas pour ce jour
       const dayOfWeek = date.getDay()
-      const dayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1 // Convertir dimanche=0 à dimanche=6
+      const dayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1 // Convertir dimanche=0 Ã  dimanche=6
       const dayPlan = planner.plan?.[dayIndex]
       
       const meals = []
@@ -472,6 +590,11 @@
     }
     return out
   })
+  const formatDayWithDate = (index: number) => {
+    const d = new Date(planner.weekStart)
+    d.setDate(d.getDate() + index)
+    return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric' })
+  }
   </script>
 
 <style scoped>
@@ -582,7 +705,9 @@
 
 .calendar-header {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: 100%;
+  box-sizing: border-box;
   background: #e9ecef;
   border-bottom: 1px solid #dee2e6;
 }
@@ -602,9 +727,11 @@
 
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   grid-template-rows: repeat(6, 1fr);
-  min-height: 400px;
+  min-height: 420px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .calendar-day {
@@ -704,6 +831,13 @@
   justify-content: space-between;
   width: 100%;
 }
+.meal-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.week-list { display: flex; flex-direction: column; gap: 12px; }
+.week-day { border: 1px solid #e9ecef; border-radius: 12px; background: #fff; padding: 12px 16px; }
+.week-day-header { font-weight: 700; margin-bottom: 6px; color: #2c3e50; }
+.week-meal-line { display: grid; grid-template-columns: 48px 1fr; gap: 8px; align-items: center; }
+.week-meal-line .label { color: #6c757d; }
 
 .meal-menu {
   border-radius: 12px;
@@ -735,3 +869,13 @@
 }
 </style>
   
+
+
+
+
+
+
+
+
+
+

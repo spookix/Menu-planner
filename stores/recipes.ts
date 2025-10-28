@@ -1,9 +1,8 @@
-import { defineStore } from 'pinia'
+﻿import { defineStore } from 'pinia'
 import { supabase } from '~/lib/supabase'
 import type { Recipe } from '~/lib/supabase'
 
 export interface RecipeFilters {
-  type: string | null
   time: number | null
   difficulty: string | null
 }
@@ -25,7 +24,6 @@ export const useRecipesStore = defineStore('recipes', {
     error: null,
     query: '',
     filters: {
-      type: null,
       time: null,
       difficulty: null
     }
@@ -42,9 +40,7 @@ export const useRecipesStore = defineStore('recipes', {
     getRecipeById: (state) => (id: string) => 
       state.recipes.find(recipe => recipe.id === id),
     
-    // Récupérer les recettes par type
-    getRecipesByType: (state) => (type: string) =>
-      state.recipes.filter(recipe => recipe.tag === type),
+    
     
     // Récupérer les recettes favorites
     getFavoriteRecipes: (state) =>
@@ -103,7 +99,7 @@ export const useRecipesStore = defineStore('recipes', {
       }
     },
 
-    // Mettre à jour une recette existante
+    // Mettre Ã  jour une recette existante
     async updateRecipe(id: string, updates: Partial<Recipe>) {
       try {
         this.loading = true
@@ -180,10 +176,7 @@ export const useRecipesStore = defineStore('recipes', {
         )
       }
 
-      // Filtre par type
-      if (this.filters.type) {
-        filtered = filtered.filter(recipe => recipe.tag === this.filters.type)
-      }
+      
 
       // Filtre par temps de préparation
       if (this.filters.time) {
@@ -200,7 +193,7 @@ export const useRecipesStore = defineStore('recipes', {
       this.filtered = filtered
     },
 
-    // Mettre à jour les filtres
+    // Mettre Ã  jour les filtres
     updateFilters(filters: Partial<RecipeFilters>) {
       this.filters = { ...this.filters, ...filters }
       this.applyFilters()
@@ -209,7 +202,6 @@ export const useRecipesStore = defineStore('recipes', {
     // Réinitialiser les filtres
     resetFilters() {
       this.filters = {
-        type: null,
         time: null,
         difficulty: null
       }
@@ -261,3 +253,4 @@ export const useRecipesStore = defineStore('recipes', {
     }
   }
 })
+

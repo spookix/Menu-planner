@@ -1,12 +1,31 @@
-<template>
+﻿<template>
     <v-card 
       class="recipe-card" 
       elevation="3" 
       rounded="xl"
-      @click="$emit('click')"
-    >
+      @click="emit('click')"
+      >
       <!-- Image de la recette -->
       <div class="recipe-image-container">
+        <div class="menu-wrapper">
+          <v-menu location="bottom start" offset="6" :close-on-content-click="true">
+            <template #activator="{ props }">
+              <v-btn v-bind="props" icon variant="text" class="card-menu-btn" :ripple="false" @click.stop @mousedown.stop @keyup.stop>
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item @click.stop="emit('edit')">
+                <v-icon start>mdi-pencil</v-icon>
+                Modifier
+              </v-list-item>
+              <v-list-item @click.stop="emit('delete')" class="text-error">
+                <v-icon start>mdi-delete</v-icon>
+                Supprimer
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
         <v-img 
           v-if="recipe.img" 
           :src="recipe.img" 
@@ -18,17 +37,6 @@
           <v-icon size="64" color="grey">mdi-food</v-icon>
         </div>
         
-        <!-- Badge du type de plat -->
-        <div class="recipe-type-badge">
-          <v-chip 
-            size="small" 
-            color="primary" 
-            variant="tonal"
-            class="type-chip"
-          >
-            {{ recipe.tag || 'Recette' }}
-          </v-chip>
-        </div>
       </div>
 
       <!-- Contenu de la carte -->
@@ -72,20 +80,28 @@ de plus les boutons listes : type de plat, temps de préparationet Dificultés, 
 Je souhaiterais également que sur la vue Menu il y ai l'option de voir les semaines précédentes et futures dans le planificateur.
 et que la vue calendrier affiche un calendrier du mois avec les noms des recettes choisies sur les jours si des recettes ont été sélectionnées 
 
-Dans la vue historique je souhaiterais que les 30 derniers jours soient transformés pour avoir un carroussel avec les 10 recettes les plus consomées de la plus consomée d'abord avec 3 repas visible à la fois. En dessous sous plus Ancien, qu'il y ait la même chose mais depuis le début de l'app.
+Dans la vue historique je souhaiterais que les 30 derniers jours soient transformés pour avoir un carroussel avec les 10 recettes les plus consomées de la plus consomée d'abord avec 3 repas visible Ã  la fois. En dessous sous plus Ancien, qu'il y ait la mÃªme chose mais depuis le début de l'app.
 
-Dans toute l'application je souhaiterais qu'il n'y ait que Déjeuner et Dinner, le petit déjeuner doit être suprimé. 
+Dans toute l'application je souhaiterais qu'il n'y ait que Déjeuner et Dinner, le petit déjeuner doit Ãªtre suprimé. 
 */
 
-  // Import the correct type from the store (fix import/export issue)
-  import type { Recipe } from '~/stores/recipes'
+  // Import correct type from shared supabase types
+  import type { Recipe } from '~/lib/supabase'
 
   // Define the props and emits correctly
   const props = defineProps<{ recipe: Recipe }>()
-  const emit = defineEmits<{ (e: 'click'): void }>()
+  const emit = defineEmits<{ (e: 'click'): void; (e: 'edit'): void; (e: 'delete'): void }>()
 
-
-<style scoped>
+  </script>
+  <style scoped>
+.card-menu-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.recipe-card:hover .card-menu-btn { opacity: 1; }
 .recipe-card {
   cursor: pointer;
   transition: all 0.3s ease;
@@ -104,6 +120,9 @@ Dans toute l'application je souhaiterais qu'il n'y ait que Déjeuner et Dinner, 
   position: relative;
   overflow: hidden;
 }
+.menu-wrapper { position: absolute; top: 8px; left: 8px; z-index: 3; }
+.card-menu-btn { opacity: 0; transition: opacity 0.2s ease; }
+.recipe-card:hover .card-menu-btn { opacity: 1; }
 
 .recipe-image {
   transition: transform 0.3s ease;
@@ -148,8 +167,9 @@ Dans toute l'application je souhaiterais qu'il n'y ait que Déjeuner et Dinner, 
 
 .recipe-description {
   line-height: 1.4;
+  white-space: pre-line;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -199,3 +219,4 @@ Dans toute l'application je souhaiterais qu'il n'y ait que Déjeuner et Dinner, 
 }
 </style>
   
+

@@ -1,8 +1,11 @@
-<template>
+﻿<template>
   <v-card class="recipe-form-card" max-width="800" elevation="8" rounded="xl">
     <v-card-title class="text-center text-h5 font-weight-bold text-primary py-6">
-      {{ isEditing ? 'Modifier la Recette' : 'Nouvelle Recette' }}
+      {{ isEditing ? (recipe.title || 'Modifier la Recette') : 'Nouvelle Recette' }}
     </v-card-title>
+    <v-card-text class="px-6 pt-0" v-if="isEditing && recipe.img">
+      <v-img :src="recipe.img" height="220" cover rounded="lg" class="mb-4" />
+    </v-card-text>
     
     <v-card-text class="px-6">
       <v-form @submit.prevent="handleSubmit" ref="form">
@@ -19,30 +22,21 @@
           </v-col>
           
           <v-col cols="12" md="6">
-            <v-text-field
+            <v-textarea
               v-model="recipe.subtitle"
               label="Description courte"
               variant="outlined"
               rounded="lg"
               class="mb-4"
+              auto-grow
+              rows="2"
+              hint="Vous pouvez saisir plusieurs lignes"
             />
           </v-col>
         </v-row>
 
         <v-row>
-          <v-col cols="12" md="4">
-            <v-select
-              v-model="recipe.tag"
-              label="Type de plat *"
-              variant="outlined"
-              rounded="lg"
-              :items="['Entrée', 'Plat Principal', 'Dessert', 'Petit-déjeuner', 'Collation']"
-              :rules="[rules.required]"
-              class="mb-4"
-            />
-          </v-col>
-          
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-select
               v-model="recipe.difficulty"
               label="Difficulté"
@@ -53,7 +47,7 @@
             />
           </v-col>
           
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-text-field
               v-model.number="recipe.time"
               label="Temps (minutes)"
@@ -120,6 +114,16 @@
           class="mb-4"
         />
 
+        <v-text-field
+          v-model="recipe.recipe_url"
+          label="URL de la recette"
+          variant="outlined"
+          rounded="lg"
+          prepend-inner-icon="mdi-link-variant"
+          class="mb-4"
+          hint="Lien vers la source de la recette"
+        />
+
         <v-textarea
           v-model="ingredientsText"
           label="Ingrédients (un par ligne) *"
@@ -147,7 +151,7 @@
             color="secondary"
             size="large"
             rounded="lg"
-            @click="$emit('cancel')"
+            @click="emit('cancel')"
             :disabled="loading"
           >
             Annuler
@@ -179,7 +183,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRecipesStore } from '~/stores/recipes'
 import type { Recipe } from '~/lib/supabase'
 
@@ -201,7 +205,7 @@ const error = ref('')
 const recipe = ref<Partial<Recipe>>({
   title: '',
   subtitle: '',
-  tag: 'Plat Principal',
+  
   difficulty: 'Facile',
   time: 30,
   kcal: 0,
@@ -211,6 +215,7 @@ const recipe = ref<Partial<Recipe>>({
   ingredients: [],
   vegetarian: false,
   img: '',
+  recipe_url: '',
   favorite: false
 })
 
@@ -228,6 +233,33 @@ onMounted(() => {
   if (props.recipe) {
     recipe.value = { ...props.recipe }
     ingredientsText.value = props.recipe.ingredients?.join('\n') || ''
+  }
+})
+
+// Mettre à jour si la recette passée en prop change (ou bascule création/édition)
+watch(() => props.recipe, (val) => {
+  if (val) {
+    recipe.value = { ...val }
+    ingredientsText.value = val.ingredients?.join('\n') || ''
+  } else {
+    // reset to defaults for creation mode
+    recipe.value = {
+      title: '',
+      subtitle: '',
+      
+      difficulty: 'Facile',
+      time: 30,
+      kcal: 0,
+      protein: 0,
+      carb: 0,
+      fat: 0,
+      ingredients: [],
+      vegetarian: false,
+      img: '',
+      recipe_url: '',
+      favorite: false
+    }
+    ingredientsText.value = ''
   }
 })
 
@@ -256,7 +288,7 @@ const handleSubmit = async () => {
     let savedRecipe: Recipe
 
     if (isEditing.value && props.recipe) {
-      // Mise à jour
+      // Mise Ã  jour
       savedRecipe = await recipes.updateRecipe(props.recipe.id, recipeData)
     } else {
       // Création
@@ -283,3 +315,5 @@ const handleSubmit = async () => {
   color: #007bff !important;
 }
 </style>
+
+

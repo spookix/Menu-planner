@@ -19,7 +19,7 @@ export interface Recipe {
   fat?: number
   ingredients?: string[]
   vegetarian?: boolean
-  tag?: string
+  recipe_url?: string
   favorite?: boolean
   created_at?: string
   updated_at?: string

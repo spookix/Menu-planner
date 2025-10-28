@@ -1,8 +1,8 @@
-# 🔧 Configuration Supabase
+﻿# ðŸ”§ Configuration Supabase
 
-## 📋 **Variables d'environnement**
+## ðŸ“‹ **Variables d'environnement**
 
-Créez un fichier `.env` à la racine de votre projet avec ces variables :
+Créez un fichier `.env` Ã  la racine de votre projet avec ces variables :
 
 ```bash
 # Variables d'environnement Supabase
@@ -19,7 +19,7 @@ NODE_ENV=development
 NUXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-## 🚀 **Déploiement rapide**
+## ðŸš€ **Déploiement rapide**
 
 ### 1. Installer les dépendances
 ```bash
@@ -42,14 +42,14 @@ npm run build
 # Suivez les instructions dans DEPLOYMENT.md
 ```
 
-## 🔒 **Sécurité**
+## ðŸ”’ **Sécurité**
 
 - Toutes les tables ont des politiques RLS activées
-- Les utilisateurs ne peuvent accéder qu'à leurs propres données
+- Les utilisateurs ne peuvent accéder qu'Ã  leurs propres données
 - Les recettes sont publiques en lecture seule
 - L'authentification est gérée par Supabase Auth
 
-## 📊 **Structure de la base de données**
+## ðŸ“Š **Structure de la base de données**
 
 - **recipes** : Recettes de cuisine
 - **meal_plans** : Plans de repas des utilisateurs
@@ -58,9 +58,10 @@ npm run build
 - **favorites** : Recettes favorites
 - **meal_history** : Historique des repas
 
-## 🌐 **URLs importantes**
+## ðŸŒ **URLs importantes**
 
 - **Dashboard Supabase** : https://app.supabase.com/project/efrjpocadsjqxzitnihr
 - **API Docs** : https://efrjpocadsjqxzitnihr.supabase.co/docs
 - **Table Editor** : https://app.supabase.com/project/efrjpocadsjqxzitnihr/editor
 - **SQL Editor** : https://app.supabase.com/project/efrjpocadsjqxzitnihr/sql
+

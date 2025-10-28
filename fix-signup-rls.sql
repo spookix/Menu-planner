@@ -1,5 +1,5 @@
--- Script pour corriger l'erreur d'inscription
--- À exécuter dans l'éditeur SQL de Supabase
+﻿-- Script pour corriger l'erreur d'inscription
+-- Ã€ exécuter dans l'éditeur SQL de Supabase
 
 -- Supprimer les politiques existantes pour user_profiles
 DROP POLICY IF EXISTS "Users can view own profile" ON user_profiles;
@@ -18,3 +18,4 @@ CREATE POLICY "Users can update own profile" ON user_profiles
 
 -- Vérifier que RLS est activé
 ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="auth-page">
     <div class="auth-container">
       <div class="auth-header text-center mb-8">
@@ -35,18 +35,18 @@ import { useAuthStore } from '~/stores/auth'
 const auth = useAuthStore()
 const showSignup = ref(false)
 
-// Rediriger si déjà connecté
+// Rediriger si déjÃ  connecté
 if (process.client && auth.isAuthenticated) {
   await navigateTo('/')
 }
 
 const handleLoginSuccess = () => {
-  // Redirection automatique après connexion
+  // Redirection automatique aprÃ¨s connexion
   navigateTo('/')
 }
 
 const handleSignupSuccess = () => {
-  // Basculer vers la connexion après inscription
+  // Basculer vers la connexion aprÃ¨s inscription
   showSignup.value = false
 }
 </script>
@@ -83,3 +83,4 @@ const handleSignupSuccess = () => {
   color: #ffffff !important;
 }
 </style>
+

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div v-if="auth.loading" class="d-flex justify-center align-center" style="height: 200px;">
       <v-progress-circular indeterminate color="primary" size="64" />
@@ -9,7 +9,7 @@
         <v-icon size="64" color="primary" class="mb-4">mdi-lock</v-icon>
         <h3 class="text-h5 font-weight-medium mb-2">Authentification requise</h3>
         <p class="text-body-1 text-medium-emphasis mb-4">
-          Vous devez être connecté pour accéder à cette page
+          Vous devez Ãªtre connecté pour accéder Ã  cette page
         </p>
         <v-btn
           color="primary"
@@ -41,3 +41,4 @@ const auth = useAuthStore()
   justify-content: center;
 }
 </style>
+

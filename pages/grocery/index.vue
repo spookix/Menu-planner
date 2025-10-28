@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <v-container class="py-4 grocery-container">
       <!-- Header avec titre et bouton -->
       <div class="d-flex align-center justify-space-between mb-6">
@@ -24,7 +24,7 @@
           :key="section.title" 
           class="section-wrapper mb-6"
         >
-          <!-- En-tête de section -->
+          <!-- En-tÃªte de section -->
           <div class="section-header mb-3">
             <h2 class="text-h6 font-weight-bold text-primary">{{ section.title }}</h2>
             <div class="section-count">

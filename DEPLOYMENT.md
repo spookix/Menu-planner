@@ -1,11 +1,11 @@
-# 🚀 Guide de Déploiement Gratuit sur Supabase
+﻿# ðŸš€ Guide de Déploiement Gratuit sur Supabase
 
-## 📋 **Prérequis**
+## ðŸ“‹ **Prérequis**
 - Un compte Supabase (gratuit)
 - Node.js et npm installés
 - Git installé
 
-## 🔧 **Étape 1 : Configuration de la base de données**
+## ðŸ”§ **Ã‰tape 1 : Configuration de la base de données**
 
 ### 1.1 Aller sur Supabase
 - Rendez-vous sur [supabase.com](https://supabase.com)
@@ -21,9 +21,9 @@
 ### 1.3 Vérifier les variables d'environnement
 - Allez dans **Settings > API**
 - Notez votre `Project URL` et `anon public` key
-- Vérifiez qu'ils correspondent à ceux dans `lib/supabase.ts`
+- Vérifiez qu'ils correspondent Ã  ceux dans `lib/supabase.ts`
 
-## 🛠️ **Étape 2 : Installation des dépendances**
+## ðŸ› ï¸ **Ã‰tape 2 : Installation des dépendances**
 
 ```bash
 # Installer les dépendances Supabase
@@ -33,14 +33,14 @@ npm install @supabase/supabase-js
 npm install
 ```
 
-## 🚀 **Étape 3 : Déploiement sur Supabase Edge Functions (Gratuit)**
+## ðŸš€ **Ã‰tape 3 : Déploiement sur Supabase Edge Functions (Gratuit)**
 
 ### 3.1 Installer Supabase CLI
 ```bash
 npm install -g supabase
 ```
 
-### 3.2 Se connecter à Supabase
+### 3.2 Se connecter Ã  Supabase
 ```bash
 supabase login
 ```
@@ -64,7 +64,7 @@ npm run build
 supabase functions deploy
 ```
 
-## 🌐 **Étape 4 : Configuration du domaine personnalisé (Optionnel)**
+## ðŸŒ **Ã‰tape 4 : Configuration du domaine personnalisé (Optionnel)**
 
 ### 4.1 Dans Supabase Dashboard
 - Allez dans **Settings > General**
@@ -78,21 +78,21 @@ Nom: www
 Valeur: efrjpocadsjqxzitnihr.supabase.co
 ```
 
-## 📱 **Étape 5 : Déploiement mobile (Optionnel)**
+## ðŸ“± **Ã‰tape 5 : Déploiement mobile (Optionnel)**
 
 ### 5.1 PWA Configuration
-- L'application est déjà configurée comme PWA
-- Testez sur mobile : l'icône d'installation devrait apparaître
+- L'application est déjÃ  configurée comme PWA
+- Testez sur mobile : l'icÃ´ne d'installation devrait apparaÃ®tre
 
 ### 5.2 Configuration des métadonnées
-- Modifiez `nuxt.config.ts` pour personnaliser le nom et l'icône
+- Modifiez `nuxt.config.ts` pour personnaliser le nom et l'icÃ´ne
 - Testez l'installation sur différents appareils
 
-## 🔒 **Étape 6 : Sécurité et authentification**
+## ðŸ”’ **Ã‰tape 6 : Sécurité et authentification**
 
 ### 6.1 Vérifier les politiques RLS
 - Toutes les tables ont des politiques de sécurité
-- Les utilisateurs ne peuvent accéder qu'à leurs propres données
+- Les utilisateurs ne peuvent accéder qu'Ã  leurs propres données
 - Les recettes sont publiques en lecture
 
 ### 6.2 Configuration de l'authentification
@@ -100,7 +100,7 @@ Valeur: efrjpocadsjqxzitnihr.supabase.co
 - Les utilisateurs peuvent s'inscrire/se connecter
 - Les profils sont créés automatiquement
 
-## 📊 **Étape 7 : Monitoring et maintenance**
+## ðŸ“Š **Ã‰tape 7 : Monitoring et maintenance**
 
 ### 7.1 Dashboard Supabase
 - Surveillez l'utilisation dans **Dashboard > Usage**
@@ -111,24 +111,24 @@ Valeur: efrjpocadsjqxzitnihr.supabase.co
 - Consultez les logs dans **Logs > Edge Functions**
 - Surveillez les erreurs dans **Logs > Database**
 
-## 💰 **Coûts et limites du plan gratuit**
+## ðŸ’° **CoÃ»ts et limites du plan gratuit**
 
-### ✅ **Inclus gratuitement :**
+### âœ… **Inclus gratuitement :**
 - 500 MB de base de données
 - 2 GB de bande passante
-- 50,000 requêtes API par mois
+- 50,000 requÃªtes API par mois
 - 500,000 Edge Function invocations
 - 1 GB de stockage de fichiers
 - 50,000 utilisateurs authentifiés
 
-### ⚠️ **Limites :**
+### âš ï¸ **Limites :**
 - 7 jours de rétention des logs
 - 2 Edge Functions simultanées
 - Pas de sauvegarde automatique
 
-## 🚨 **Dépannage courant**
+## ðŸš¨ **Dépannage courant**
 
-### Problème : Erreur de connexion à Supabase
+### ProblÃ¨me : Erreur de connexion Ã  Supabase
 ```bash
 # Vérifier les variables d'environnement
 echo $SUPABASE_URL
@@ -139,17 +139,17 @@ supabase unlink
 supabase link --project-ref efrjpocadsjqxzitnihr
 ```
 
-### Problème : Tables non créées
+### ProblÃ¨me : Tables non créées
 - Vérifiez que le script SQL s'est exécuté sans erreur
 - Consultez les logs dans **Logs > Database**
 - Vérifiez les permissions dans **Table Editor**
 
-### Problème : Erreurs RLS
+### ProblÃ¨me : Erreurs RLS
 - Vérifiez que les politiques sont activées
 - Testez avec un utilisateur authentifié
 - Consultez les logs d'authentification
 
-## 📞 **Support et ressources**
+## ðŸ“ž **Support et ressources**
 
 ### Documentation officielle
 - [Supabase Docs](https://supabase.com/docs)
@@ -161,7 +161,7 @@ supabase link --project-ref efrjpocadsjqxzitnihr
 - [Nuxt Discord](https://discord.gg/nuxt)
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/supabase)
 
-## 🎯 **Prochaines étapes**
+## ðŸŽ¯ **Prochaines étapes**
 
 ### Améliorations possibles
 1. **Authentification sociale** (Google, Facebook, GitHub)
@@ -170,11 +170,12 @@ supabase link --project-ref efrjpocadsjqxzitnihr
 4. **Analytics** avec Supabase Analytics
 5. **Backup automatique** (plan payant)
 
-### Évolutivité
-- L'application est conçue pour s'adapter au plan Pro de Supabase
+### Ã‰volutivité
+- L'application est conÃ§ue pour s'adapter au plan Pro de Supabase
 - Migration facile vers d'autres fournisseurs si nécessaire
 - Architecture modulaire pour faciliter les extensions
 
 ---
 
-**🎉 Félicitations ! Votre application Menu Planner est maintenant déployée gratuitement sur Supabase !**
+**ðŸŽ‰ Félicitations ! Votre application Menu Planner est maintenant déployée gratuitement sur Supabase !**
+

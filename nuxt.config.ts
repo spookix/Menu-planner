@@ -1,4 +1,4 @@
-import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+﻿import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 export default defineNuxtConfig({
   //...
   //srcDir: 'app',
@@ -16,3 +16,4 @@ export default defineNuxtConfig({
   ],
   modules: ['@pinia/nuxt'],
 })
+

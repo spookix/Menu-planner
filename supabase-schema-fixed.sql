@@ -1,5 +1,5 @@
--- Script de création des tables pour l'application Menu Planner
--- À exécuter dans l'éditeur SQL de Supabase
+﻿-- Script de création des tables pour l'application Menu Planner
+-- Ã€ exécuter dans l'éditeur SQL de Supabase
 
 -- 1. Table des recettes
 CREATE TABLE recipes (
@@ -15,7 +15,7 @@ CREATE TABLE recipes (
   fat INTEGER,
   ingredients TEXT[],
   vegetarian BOOLEAN DEFAULT false,
-  tag TEXT,
+  recipe_url TEXT,
   favorite BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -73,7 +73,7 @@ CREATE TABLE meal_history (
 );
 
 -- Index pour améliorer les performances
-CREATE INDEX idx_recipes_tag ON recipes(tag);
+-- removed: idx_recipes_tag (type removed)
 CREATE INDEX idx_recipes_difficulty ON recipes(difficulty);
 CREATE INDEX idx_recipes_vegetarian ON recipes(vegetarian);
 CREATE INDEX idx_recipes_favorite ON recipes(favorite);
@@ -82,7 +82,7 @@ CREATE INDEX idx_grocery_items_user_section ON grocery_items(user_id, section);
 CREATE INDEX idx_favorites_user ON favorites(user_id);
 CREATE INDEX idx_meal_history_user_date ON meal_history(user_id, consumed_at);
 
--- Fonction pour mettre à jour updated_at automatiquement
+-- Fonction pour mettre Ã  jour updated_at automatiquement
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -119,7 +119,7 @@ CREATE POLICY "Users can update their own recipes" ON recipes
 CREATE POLICY "Users can delete their own recipes" ON recipes
   FOR DELETE USING (auth.role() = 'authenticated');
 
--- Politiques pour meal_plans (accès uniquement à l'utilisateur propriétaire)
+-- Politiques pour meal_plans (accÃ¨s uniquement Ã  l'utilisateur propriétaire)
 CREATE POLICY "Users can view own meal plans" ON meal_plans
   FOR SELECT USING (auth.uid() = user_id);
 
@@ -132,7 +132,7 @@ CREATE POLICY "Users can update own meal plans" ON meal_plans
 CREATE POLICY "Users can delete own meal plans" ON meal_plans
   FOR DELETE USING (auth.uid() = user_id);
 
--- Politiques pour grocery_items (accès uniquement à l'utilisateur propriétaire)
+-- Politiques pour grocery_items (accÃ¨s uniquement Ã  l'utilisateur propriétaire)
 CREATE POLICY "Users can view own grocery items" ON grocery_items
   FOR SELECT USING (auth.uid() = user_id);
 
@@ -145,7 +145,7 @@ CREATE POLICY "Users can update own grocery items" ON grocery_items
 CREATE POLICY "Users can delete own grocery items" ON grocery_items
   FOR DELETE USING (auth.uid() = user_id);
 
--- Politiques pour user_profiles (accès uniquement à l'utilisateur propriétaire)
+-- Politiques pour user_profiles (accÃ¨s uniquement Ã  l'utilisateur propriétaire)
 CREATE POLICY "Users can view own profile" ON user_profiles
   FOR SELECT USING (auth.uid() = id);
 
@@ -155,7 +155,7 @@ CREATE POLICY "Users can insert own profile" ON user_profiles
 CREATE POLICY "Users can update own profile" ON user_profiles
   FOR UPDATE USING (auth.uid() = id);
 
--- Politiques pour favorites (accès uniquement à l'utilisateur propriétaire)
+-- Politiques pour favorites (accÃ¨s uniquement Ã  l'utilisateur propriétaire)
 CREATE POLICY "Users can view own favorites" ON favorites
   FOR SELECT USING (auth.uid() = user_id);
 
@@ -165,7 +165,7 @@ CREATE POLICY "Users can insert own favorites" ON favorites
 CREATE POLICY "Users can delete own favorites" ON favorites
   FOR DELETE USING (auth.uid() = user_id);
 
--- Politiques pour meal_history (accès uniquement à l'utilisateur propriétaire)
+-- Politiques pour meal_history (accÃ¨s uniquement Ã  l'utilisateur propriétaire)
 CREATE POLICY "Users can view own meal history" ON meal_history
   FOR SELECT USING (auth.uid() = user_id);
 
@@ -179,12 +179,10 @@ CREATE POLICY "Users can delete own meal history" ON meal_history
   FOR DELETE USING (auth.uid() = user_id);
 
 -- Données d'exemple pour les recettes
-INSERT INTO recipes (title, subtitle, tag, difficulty, time, kcal, protein, carb, fat, ingredients, vegetarian) VALUES
-('Salade Quinoa Méditerranéenne', 'Une salade fraîche et nutritive parfaite pour l''été', 'Plat Principal', 'Facile', 30, 450, 15, 50, 20, ARRAY['1 tasse quinoa', '2 tasses d''eau', '1 concombre, coupé en dés', '1 poivron rouge, coupé en dés', '1/2 tasse olives Kalamata, coupées en deux', '1/4 tasse feta, émiettée'], true),
-('Toast Avocat Épices', 'Un petit-déjeuner sain et savoureux', 'Petit-déjeuner', 'Facile', 15, 320, 8, 25, 22, ARRAY['2 tranches de pain complet', '1 avocat mûr', 'Épices tout bagel', 'Sel et poivre au goût'], true),
-('Soupe de Lentilles', 'Une soupe réconfortante et nutritive', 'Plat Principal', 'Facile', 45, 380, 18, 45, 12, ARRAY['1 tasse lentilles', '1 oignon, haché', '2 carottes, coupées en dés', '2 gousses d''ail', '1 litre de bouillon de légumes'], true),
-('Skewers Caprese', 'Un apéritif rafraîchissant et élégant', 'Entrée', 'Facile', 20, 180, 8, 5, 15, ARRAY['Tomates cerises', 'Boules de mozzarella', 'Feuilles de basilic', 'Huile d''olive', 'Vinaigre balsamique'], true),
-('Mousse Chocolat Avocat', 'Un dessert crémeux avec un ingrédient secret sain', 'Dessert', 'Moyen', 25, 280, 4, 20, 18, ARRAY['2 avocats mûrs', '1/4 tasse cacao en poudre', '1/4 tasse sirop d''érable', '1 cuillère à café vanille'], true);
+INSERT INTO recipes (title, subtitle, difficulty, time, kcal, protein, carb, fat, ingredients, vegetarian) VALUES
+('Salade Quinoa Méditerranéenne','Une salade fraîche et nutritive pour l\'été','Facile',30,450,15,50,20,ARRAY['1 tasse quinoa','2 tasses d\'eau','1 concombre','1 poivron rouge','olives Kalamata','feta'],true),
+('Toast Avocat aux épices','Un petit-déjeuner sain et savoureux','Facile',15,320,8,25,22,ARRAY['2 tranches pain complet','1 avocat mûr','épices tout bagel','sel','poivre'],true),
+('Soupe de Lentilles','Une soupe réconfortante','Facile',45,380,18,45,12,ARRAY['lentilles','oignon','carottes','ail','bouillon de légumes'],true);
 
 -- Commentaires sur les tables
 COMMENT ON TABLE recipes IS 'Table des recettes de cuisine';
@@ -193,3 +191,6 @@ COMMENT ON TABLE grocery_items IS 'Table des articles de courses';
 COMMENT ON TABLE user_profiles IS 'Profils étendus des utilisateurs';
 COMMENT ON TABLE favorites IS 'Table des recettes favorites des utilisateurs';
 COMMENT ON TABLE meal_history IS 'Historique des repas consommés';
+
+
+

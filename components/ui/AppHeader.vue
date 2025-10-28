@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <v-app-bar app elevation="2" color="surface" class="app-header">
     <v-container class="d-flex align-center">
       <div class="d-flex align-center">
@@ -63,3 +63,4 @@ const auth = useAuthStore()
   color: #007bff !important;
 }
 </style>
+
