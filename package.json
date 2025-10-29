@@ -13,13 +13,14 @@
     "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "^0.11.2",
     "@supabase/supabase-js": "^2.56.1",
+    "@vercel/analytics": "^1.5.0",
     "@vueuse/core": "^13.8.0",
-    "nuxt": "^4.0.3",
     "pinia": "^3.0.3",
     "vue": "^3.5.20",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "nuxt": "^4.2.0",
     "vite-plugin-vuetify": "^2.1.2",
     "vuetify": "^3.9.6"
   }

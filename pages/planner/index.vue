@@ -1,4 +1,5 @@
 ﻿<template>
+  <AuthGuard>
     <v-container class="py-4 planner-container">
       <!-- Header avec titre et bouton d'ajout -->
       <div class="d-flex align-center justify-space-between mb-6">
@@ -85,11 +86,11 @@
             <div class="week-day-header">{{ formatDayWithDate(i - 1) }}</div>
             <div class="week-meal-line">
               <span class="label">Midi:</span>
-              <span class="value ellipsis">{{ planner.plan?.[i - 1]?.lunch?.title || '—' }}</span>
+              <span class="value ellipsis">{{ planner.plan?.[i - 1]?.lunch?.title || '-' }}</span>
             </div>
             <div class="week-meal-line">
               <span class="label">Soir:</span>
-              <span class="value ellipsis">{{ planner.plan?.[i - 1]?.dinner?.title || '—' }}</span>
+              <span class="value ellipsis">{{ planner.plan?.[i - 1]?.dinner?.title || '-' }}</span>
             </div>
           </div>
         </div>
@@ -123,7 +124,7 @@
         <!-- Calendrier mensuel -->
         <v-card class="calendar-card" elevation="2">
           <v-card-text class="pa-0">
-            <!-- En-tÃªtes des jours -->
+            <!-- En-têtes des jours -->
             <div class="calendar-header">
               <div 
                 v-for="day in weekDays" 
@@ -279,7 +280,8 @@
         </v-dialog>
       </div>
     </v-container>
-  </template>
+  </AuthGuard>
+</template>
   
   <script setup lang="ts">
   import { ref, computed, onMounted, watch } from 'vue'
@@ -338,7 +340,7 @@
   // Fonction pour sélectionner un créneau de repas
   const selectMealSlot = (date: Date, meal: 'lunch'|'dinner') => {
     selectedMealSlot.value = { date, meal }
-    // Rediriger vers les recettes avec les paramÃ¨tres de sélection
+    // Rediriger vers les recettes avec les paramètres de sélection
     navigateTo(`/recipes?selectedDate=${date.toISOString()}&selectedMeal=${meal}`)
   }
   
@@ -465,7 +467,7 @@
       
       // Récupérer les repas pour ce jour
       const dayOfWeek = date.getDay()
-      const dayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1 // Convertir dimanche=0 Ã  dimanche=6
+      const dayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1 // Convertir dimanche=0 à dimanche=6
       const dayPlan = planner.plan?.[dayIndex]
       
       const meals = []
@@ -869,6 +871,8 @@
 }
 </style>
   
+
+
 
 
 

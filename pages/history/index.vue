@@ -1,141 +1,143 @@
-﻿<template>
-  <v-container class="py-4 history-container">
-    <!-- Header avec titre -->
-    <div class="text-center mb-8">
-      <h1 class="text-h3 font-weight-bold text-primary mb-2">Historique</h1>
-      <p class="text-body-1 text-medium-emphasis">Découvrez vos recettes les plus consommées</p>
-    </div>
-
-    <!-- Section 30 derniers jours -->
-    <div class="history-section mb-8">
-      <div class="section-header mb-6">
-        <h2 class="text-h5 font-weight-bold text-primary">30 Derniers Jours</h2>
-        <div class="section-subtitle text-body-2 text-medium-emphasis">
-          Vos recettes les plus populaires récemment
-        </div>
+<template>
+  <AuthGuard>
+    <v-container class="py-4 history-container">
+      <!-- Header avec titre -->
+      <div class="text-center mb-8">
+        <h1 class="text-h3 font-weight-bold text-primary mb-2">Historique</h1>
+        <p class="text-body-1 text-medium-emphasis">Découvrez vos recettes les plus consommées</p>
       </div>
-      
-      <!-- Carrousel des top recettes récentes -->
-      <div class="carousel-container">
-        <div class="carousel-header">
-          <h3 class="text-h6 font-weight-bold">Top 10 Recettes</h3>
-          <div class="carousel-nav">
-            <v-btn 
-              icon="mdi-chevron-left" 
-              variant="text" 
-              size="small"
-              @click="previousRecent"
-              :disabled="recentStartIndex === 0"
-            />
-            <span class="carousel-counter">
-              {{ recentStartIndex + 1 }}-{{ Math.min(recentStartIndex + 3, topRecentRecipes.length) }} / {{ topRecentRecipes.length }}
-            </span>
-            <v-btn 
-              icon="mdi-chevron-right" 
-              variant="text" 
-              size="small"
-              @click="nextRecent"
-              :disabled="recentStartIndex + 3 >= topRecentRecipes.length"
-            />
+
+      <!-- Section 30 derniers jours -->
+      <div class="history-section mb-8">
+        <div class="section-header mb-6">
+          <h2 class="text-h5 font-weight-bold text-primary">30 Derniers Jours</h2>
+          <div class="section-subtitle text-body-2 text-medium-emphasis">
+            Vos recettes les plus populaires récemment
           </div>
         </div>
         
-        <div class="carousel-content">
-          <div 
-            v-for="recipe in visibleRecentRecipes" 
-            :key="recipe.id"
-            class="recipe-card"
-            @click="$router.push(`/recipes/${recipe.id}`)"
-          >
-            <v-img :src="recipe.img" height="120" cover class="recipe-image" />
-            <div class="recipe-info">
-              <h4 class="recipe-title">{{ recipe.title }}</h4>
-              <div class="recipe-stats">
-                <span class="consumption-count">{{ recipe.consumptionCount }} fois</span>
-                <span class="last-consumed">{{ formatLastConsumed(recipe.lastConsumed) }}</span>
+        <!-- Carrousel des top recettes récentes -->
+        <div class="carousel-container">
+          <div class="carousel-header">
+            <h3 class="text-h6 font-weight-bold">Top 10 Recettes</h3>
+            <div class="carousel-nav">
+              <v-btn 
+                icon="mdi-chevron-left" 
+                variant="text" 
+                size="small"
+                @click="previousRecent"
+                :disabled="recentStartIndex === 0"
+              />
+              <span class="carousel-counter">
+                {{ recentStartIndex + 1 }}-{{ Math.min(recentStartIndex + 3, topRecentRecipes.length) }} / {{ topRecentRecipes.length }}
+              </span>
+              <v-btn 
+                icon="mdi-chevron-right" 
+                variant="text" 
+                size="small"
+                @click="nextRecent"
+                :disabled="recentStartIndex + 3 >= topRecentRecipes.length"
+              />
+            </div>
+          </div>
+          
+          <div class="carousel-content">
+            <div 
+              v-for="recipe in visibleRecentRecipes" 
+              :key="recipe.id"
+              class="recipe-card"
+              @click="$router.push(`/recipes/${recipe.id}`)"
+            >
+              <v-img :src="recipe.img" height="120" cover class="recipe-image" />
+              <div class="recipe-info">
+                <h4 class="recipe-title">{{ recipe.title }}</h4>
+                <div class="recipe-stats">
+                  <span class="consumption-count">{{ recipe.consumptionCount }} fois</span>
+                  <span class="last-consumed">{{ formatLastConsumed(recipe.lastConsumed) }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Section Plus Ancien -->
-    <div class="history-section">
-      <div class="section-header mb-6">
-        <h2 class="text-h5 font-weight-bold text-primary">Depuis le Début</h2>
-        <div class="section-subtitle text-body-2 text-medium-emphasis">
-          Vos recettes favorites de tous les temps
-        </div>
-      </div>
-      
-      <!-- Carrousel des top recettes de tous les temps -->
-      <div class="carousel-container">
-        <div class="carousel-header">
-          <h3 class="text-h6 font-weight-bold">Top 10 Recettes</h3>
-          <div class="carousel-nav">
-            <v-btn 
-              icon="mdi-chevron-left" 
-              variant="text" 
-              size="small"
-              @click="previousAllTime"
-              :disabled="allTimeStartIndex === 0"
-            />
-            <span class="carousel-counter">
-              {{ allTimeStartIndex + 1 }}-{{ Math.min(allTimeStartIndex + 3, topAllTimeRecipes.length) }} / {{ topAllTimeRecipes.length }}
-            </span>
-            <v-btn 
-              icon="mdi-chevron-right" 
-              variant="text" 
-              size="small"
-              @click="nextAllTime"
-              :disabled="allTimeStartIndex + 3 >= topAllTimeRecipes.length"
-            />
+      <!-- Section Plus Ancien -->
+      <div class="history-section">
+        <div class="section-header mb-6">
+          <h2 class="text-h5 font-weight-bold text-primary">Depuis le Début</h2>
+          <div class="section-subtitle text-body-2 text-medium-emphasis">
+            Vos recettes favorites de tous les temps
           </div>
         </div>
         
-        <div class="carousel-content">
-          <div 
-            v-for="recipe in visibleAllTimeRecipes" 
-            :key="recipe.id"
-            class="recipe-card"
-            @click="$router.push(`/recipes/${recipe.id}`)"
-          >
-            <v-img :src="recipe.img" height="120" cover class="recipe-image" />
-            <div class="recipe-info">
-              <h4 class="recipe-title">{{ recipe.title }}</h4>
-              <div class="recipe-stats">
-                <span class="consumption-count">{{ recipe.totalConsumption }} fois</span>
-                <span class="first-consumed">{{ formatFirstConsumed(recipe.firstConsumed) }}</span>
+        <!-- Carrousel des top recettes de tous les temps -->
+        <div class="carousel-container">
+          <div class="carousel-header">
+            <h3 class="text-h6 font-weight-bold">Top 10 Recettes</h3>
+            <div class="carousel-nav">
+              <v-btn 
+                icon="mdi-chevron-left" 
+                variant="text" 
+                size="small"
+                @click="previousAllTime"
+                :disabled="allTimeStartIndex === 0"
+              />
+              <span class="carousel-counter">
+                {{ allTimeStartIndex + 1 }}-{{ Math.min(allTimeStartIndex + 3, topAllTimeRecipes.length) }} / {{ topAllTimeRecipes.length }}
+              </span>
+              <v-btn 
+                icon="mdi-chevron-right" 
+                variant="text" 
+                size="small"
+                @click="nextAllTime"
+                :disabled="allTimeStartIndex + 3 >= topAllTimeRecipes.length"
+              />
+            </div>
+          </div>
+          
+          <div class="carousel-content">
+            <div 
+              v-for="recipe in visibleAllTimeRecipes" 
+              :key="recipe.id"
+              class="recipe-card"
+              @click="$router.push(`/recipes/${recipe.id}`)"
+            >
+              <v-img :src="recipe.img" height="120" cover class="recipe-image" />
+              <div class="recipe-info">
+                <h4 class="recipe-title">{{ recipe.title }}</h4>
+                <div class="recipe-stats">
+                  <span class="consumption-count">{{ recipe.totalConsumption }} fois</span>
+                  <span class="first-consumed">{{ formatFirstConsumed(recipe.firstConsumed) }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Statistiques globales -->
-    <div class="stats-container mt-8">
-      <v-card variant="tonal" class="stats-card" rounded="xl">
-        <v-card-text class="text-center">
-          <div class="stats-grid">
-            <div class="stat-item">
-              <div class="stat-value">{{ totalMeals }}</div>
-              <div class="stat-label">Total Repas</div>
+      <!-- Statistiques globales -->
+      <div class="stats-container mt-8">
+        <v-card variant="tonal" class="stats-card" rounded="xl">
+          <v-card-text class="text-center">
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value">{{ totalMeals }}</div>
+                <div class="stat-label">Total Repas</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ uniqueRecipes }}</div>
+                <div class="stat-label">Recettes Uniques</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ averagePerDay }}</div>
+                <div class="stat-label">Moy/Jour</div>
+              </div>
             </div>
-            <div class="stat-item">
-              <div class="stat-value">{{ uniqueRecipes }}</div>
-              <div class="stat-label">Recettes Uniques</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-value">{{ averagePerDay }}</div>
-              <div class="stat-label">Moy/Jour</div>
-            </div>
-          </div>
-        </v-card-text>
-      </v-card>
-    </div>
-  </v-container>
+          </v-card-text>
+        </v-card>
+      </div>
+    </v-container>
+  </AuthGuard>
 </template>
   
 <script setup lang="ts">
@@ -147,10 +149,10 @@ const topRecentRecipes = [
   { id: '2', title: 'Soupe de Lentilles', img: 'https://picsum.photos/200?2', consumptionCount: 6, lastConsumed: '2024-01-14' },
   { id: '3', title: 'Skewers Caprese', img: 'https://picsum.photos/200?3', consumptionCount: 5, lastConsumed: '2024-01-13' },
   { id: '4', title: 'Mousse Chocolat Avocat', img: 'https://picsum.photos/200?4', consumptionCount: 4, lastConsumed: '2024-01-12' },
-  { id: '5', title: 'PÃ¢tes Carbonara', img: 'https://picsum.photos/200?5', consumptionCount: 4, lastConsumed: '2024-01-11' },
+  { id: '5', title: 'Pâtes Carbonara', img: 'https://picsum.photos/200?5', consumptionCount: 4, lastConsumed: '2024-01-11' },
   { id: '6', title: 'Risotto aux Champignons', img: 'https://picsum.photos/200?6', consumptionCount: 3, lastConsumed: '2024-01-10' },
   { id: '7', title: 'Tartare de Saumon', img: 'https://picsum.photos/200?7', consumptionCount: 3, lastConsumed: '2024-01-09' },
-  { id: '8', title: 'Ratatouille ProvenÃ§ale', img: 'https://picsum.photos/200?8', consumptionCount: 2, lastConsumed: '2024-01-08' },
+  { id: '8', title: 'Ratatouille Provençale', img: 'https://picsum.photos/200?8', consumptionCount: 2, lastConsumed: '2024-01-08' },
   { id: '9', title: 'Couscous Marocain', img: 'https://picsum.photos/200?9', consumptionCount: 2, lastConsumed: '2024-01-07' },
   { id: '10', title: 'Tarte Tatin', img: 'https://picsum.photos/200?10', consumptionCount: 1, lastConsumed: '2024-01-06' }
 ]
@@ -159,12 +161,12 @@ const topRecentRecipes = [
 const topAllTimeRecipes = [
   { id: '1', title: 'Salade Quinoa Méditerranéenne', img: 'https://picsum.photos/200?1', totalConsumption: 45, firstConsumed: '2023-06-15' },
   { id: '2', title: 'Soupe de Lentilles', img: 'https://picsum.photos/200?2', totalConsumption: 38, firstConsumed: '2023-05-20' },
-  { id: '3', title: 'PÃ¢tes Carbonara', img: 'https://picsum.photos/200?5', totalConsumption: 32, firstConsumed: '2023-04-10' },
+  { id: '3', title: 'Pâtes Carbonara', img: 'https://picsum.photos/200?5', totalConsumption: 32, firstConsumed: '2023-04-10' },
   { id: '4', title: 'Risotto aux Champignons', img: 'https://picsum.photos/200?6', totalConsumption: 28, firstConsumed: '2023-07-05' },
   { id: '5', title: 'Skewers Caprese', img: 'https://picsum.photos/200?3', totalConsumption: 25, firstConsumed: '2023-08-12' },
   { id: '6', title: 'Tartare de Saumon', img: 'https://picsum.photos/200?7', totalConsumption: 22, firstConsumed: '2023-09-18' },
   { id: '7', title: 'Mousse Chocolat Avocat', img: 'https://picsum.photos/200?4', totalConsumption: 20, firstConsumed: '2023-10-03' },
-  { id: '8', title: 'Ratatouille ProvenÃ§ale', img: 'https://picsum.photos/200?8', totalConsumption: 18, firstConsumed: '2023-11-15' },
+  { id: '8', title: 'Ratatouille Provençale', img: 'https://picsum.photos/200?8', totalConsumption: 18, firstConsumed: '2023-11-15' },
   { id: '9', title: 'Couscous Marocain', img: 'https://picsum.photos/200?9', totalConsumption: 15, firstConsumed: '2023-12-01' },
   { id: '10', title: 'Tarte Tatin', img: 'https://picsum.photos/200?10', totalConsumption: 12, firstConsumed: '2024-01-02' }
 ]
@@ -173,7 +175,7 @@ const topAllTimeRecipes = [
 const recentStartIndex = ref(0)
 const allTimeStartIndex = ref(0)
 
-// Recettes visibles dans les carrousels (3 Ã  la fois)
+// Recettes visibles dans les carrousels (3 à la fois)
 const visibleRecentRecipes = computed(() => 
   topRecentRecipes.slice(recentStartIndex.value, recentStartIndex.value + 3)
 )
@@ -430,4 +432,4 @@ const averagePerDay = computed(() => {
   }
 }
 </style>
-  
+

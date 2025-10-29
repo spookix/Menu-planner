@@ -15,5 +15,6 @@ export default defineNuxtConfig({
     { path: '~/components', pathPrefix: false },
   ],
   modules: ['@pinia/nuxt'],
+  nitro: { compatibilityDate: '2025-10-29' },
 })
 

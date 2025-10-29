@@ -6,7 +6,7 @@
       <slot />
     </v-main>
 
-    <BottomTabs />
+    <BottomTabs v-if="auth.isAuthenticated" />
   </v-app>
 </template>
 
@@ -24,7 +24,7 @@ onMounted(async () => {
 
 <style>
 .v-main {
-  padding-top: 64px; /* Hauteur de l'en-tÃªte */
+  padding-top: 64px; /* Hauteur de l'en-tête */
   padding-bottom: 80px; /* Hauteur de la navigation du bas */
 }
 </style>
@@ -36,4 +36,5 @@ onMounted(async () => {
   padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px)) !important;
 }
 </style>
+
 

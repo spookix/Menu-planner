@@ -1,4 +1,5 @@
 ﻿<template>
+  <AuthGuard>
     <v-container class="py-4 grocery-container">
       <!-- Header avec titre et bouton -->
       <div class="d-flex align-center justify-space-between mb-6">
@@ -24,7 +25,7 @@
           :key="section.title" 
           class="section-wrapper mb-6"
         >
-          <!-- En-tÃªte de section -->
+          <!-- En-tête de section -->
           <div class="section-header mb-3">
             <h2 class="text-h6 font-weight-bold text-primary">{{ section.title }}</h2>
             <div class="section-count">
@@ -95,7 +96,7 @@
             <div>
               <div class="text-h6 font-weight-bold">Progression des Courses</div>
               <div class="text-body-2 text-medium-emphasis">
-                {{ totalCompleted }} sur {{ totalItems }} articles terminés
+                {{ totalCompleted }} sur {{ totalItems }} articles termin�s
               </div>
             </div>
             <div class="progress-circle">
@@ -113,7 +114,8 @@
         </v-card>
       </div>
     </v-container>
-  </template>
+</AuthGuard>
+</template>
   
   <script setup lang="ts">
   import { useGroceryStore } from '~/stores/grocery'
@@ -303,3 +305,5 @@
   }
   </style>
   
+
+

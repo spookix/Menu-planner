@@ -288,7 +288,7 @@ const handleSubmit = async () => {
     let savedRecipe: Recipe
 
     if (isEditing.value && props.recipe) {
-      // Mise Ã  jour
+      // Mise à  jour
       savedRecipe = await recipes.updateRecipe(props.recipe.id, recipeData)
     } else {
       // Création
@@ -315,5 +315,6 @@ const handleSubmit = async () => {
   color: #007bff !important;
 }
 </style>
+
 
 

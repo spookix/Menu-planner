@@ -9,46 +9,39 @@
       <div class="auth-forms">
         <LoginForm 
           v-if="!showSignup" 
-          @switch-to-signup="showSignup = true"
-          @login-success="handleLoginSuccess"
+          @switchToSignup="showSignup = true"
         />
         <SignupForm 
           v-else 
-          @switch-to-login="showSignup = false"
-          @signup-success="handleSignupSuccess"
+          @switchToLogin="showSignup = false"
         />
       </div>
 
       <div class="auth-footer text-center mt-8">
         <p class="text-body-2 text-medium-emphasis">
-          En continuant, vous acceptez nos conditions d'utilisation
+          En continuant, vous acceptez nos conditions d\'utilisation
         </p>
       </div>
     </div>
   </div>
+  
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { navigateTo } from '#app'
 import { useAuthStore } from '~/stores/auth'
 
 const auth = useAuthStore()
 const showSignup = ref(false)
 
-// Rediriger si déjÃ  connecté
-if (process.client && auth.isAuthenticated) {
+// Rediriger si déjà connecté (client)
+if (import.meta.client && auth.isAuthenticated) {
   await navigateTo('/')
 }
 
-const handleLoginSuccess = () => {
-  // Redirection automatique aprÃ¨s connexion
-  navigateTo('/')
-}
-
-const handleSignupSuccess = () => {
-  // Basculer vers la connexion aprÃ¨s inscription
-  showSignup.value = false
-}
+// Surveille l\'authentification pour rediriger après connexion
+watch(() => auth.isAuthenticated, (v) => { if (v) navigateTo('/') })
 </script>
 
 <style scoped>
@@ -83,4 +76,3 @@ const handleSignupSuccess = () => {
   color: #ffffff !important;
 }
 </style>
-

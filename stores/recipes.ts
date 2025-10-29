@@ -30,19 +30,19 @@ export const useRecipesStore = defineStore('recipes', {
   }),
 
   getters: {
-    // Récupérer toutes les recettes
+    // R�cup�rer toutes les recettes
     allRecipes: (state) => state.recipes,
     
-    // Récupérer les recettes filtrées
+    // R�cup�rer les recettes filtr�es
     filteredRecipes: (state) => state.filtered,
     
-    // Récupérer une recette par ID
+    // R�cup�rer une recette par ID
     getRecipeById: (state) => (id: string) => 
       state.recipes.find(recipe => recipe.id === id),
     
     
     
-    // Récupérer les recettes favorites
+    // R�cup�rer les recettes favorites
     getFavoriteRecipes: (state) =>
       state.recipes.filter(recipe => recipe.favorite)
   },
@@ -71,7 +71,7 @@ export const useRecipesStore = defineStore('recipes', {
       }
     },
 
-    // Créer une nouvelle recette
+    // Cr�er une nouvelle recette
     async createRecipe(recipeData: Omit<Recipe, 'id' | 'created_at' | 'updated_at'>) {
       try {
         this.loading = true
@@ -99,7 +99,7 @@ export const useRecipesStore = defineStore('recipes', {
       }
     },
 
-    // Mettre Ã  jour une recette existante
+    // Mettre à jour une recette existante
     async updateRecipe(id: string, updates: Partial<Recipe>) {
       try {
         this.loading = true
@@ -178,14 +178,14 @@ export const useRecipesStore = defineStore('recipes', {
 
       
 
-      // Filtre par temps de préparation
+      // Filtre par temps de pr�paration
       if (this.filters.time) {
         filtered = filtered.filter(recipe => 
           recipe.time && recipe.time <= this.filters.time!
         )
       }
 
-      // Filtre par difficulté
+      // Filtre par difficult�
       if (this.filters.difficulty) {
         filtered = filtered.filter(recipe => recipe.difficulty === this.filters.difficulty)
       }
@@ -193,13 +193,13 @@ export const useRecipesStore = defineStore('recipes', {
       this.filtered = filtered
     },
 
-    // Mettre Ã  jour les filtres
+    // Mettre à jour les filtres
     updateFilters(filters: Partial<RecipeFilters>) {
       this.filters = { ...this.filters, ...filters }
       this.applyFilters()
     },
 
-    // Réinitialiser les filtres
+    // R�initialiser les filtres
     resetFilters() {
       this.filters = {
         time: null,
@@ -224,7 +224,7 @@ export const useRecipesStore = defineStore('recipes', {
       }
     },
 
-    // Charger une recette spécifique par ID
+    // Charger une recette sp�cifique par ID
     async loadRecipe(id: string) {
       try {
         this.loading = true
@@ -253,4 +253,5 @@ export const useRecipesStore = defineStore('recipes', {
     }
   }
 })
+
 

@@ -1,15 +1,15 @@
 ﻿<template>
   <v-app-bar app elevation="2" color="surface" class="app-header">
     <v-container class="d-flex align-center">
-      <div class="d-flex align-center">
+      <NuxtLink to="/" aria-label="Aller � l'accueil" class="d-flex align-center header-home-link">
         <v-icon size="32" color="primary" class="mr-3">mdi-food</v-icon>
         <h1 class="text-h5 font-weight-bold text-primary mb-0">Menu Planner</h1>
-      </div>
+      </NuxtLink>
 
       <v-spacer />
 
       <div class="d-flex align-center gap-3">
-        <!-- Utilisateur connecté -->
+        <!-- Utilisateur connect� -->
         <div v-if="auth.isAuthenticated" class="d-flex align-center gap-2">
           <v-avatar size="32" color="primary">
             <span class="text-caption font-weight-bold text-white">
@@ -62,5 +62,13 @@ const auth = useAuthStore()
 .text-primary {
   color: #007bff !important;
 }
+
+.header-home-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
 </style>
+
+
 

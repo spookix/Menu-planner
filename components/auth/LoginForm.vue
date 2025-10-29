@@ -52,7 +52,7 @@
             variant="text"
             color="primary"
             size="small"
-            @click="$emit('switchToSignup')"
+            @click="('switchToSignup')"
           >
             Pas encore de compte ? S'inscrire
           </v-btn>
@@ -75,7 +75,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-// Corrigez l'import pour utiliser un chemin relatif correct
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -88,7 +87,7 @@ const password = ref('')
 
 const rules = {
   required: (v: string) => !!v || 'Ce champ est requis',
-  minLength: (v: string) => v.length >= 4 || 'Minimum 6 caractÃ¨res'
+  minLength: (v: string) => v.length >= 6 || 'Minimum 6 caractères'
 }
 
 const handleLogin = async () => {
@@ -100,7 +99,6 @@ const handleLogin = async () => {
   
   try {
     await auth.signIn(email.value, password.value)
-    // La connexion est gérée par le store
   } catch (err: any) {
     error.value = err.message || 'Erreur de connexion'
   } finally {
@@ -122,4 +120,3 @@ defineEmits<{ (e: 'switchToSignup'): void }>()
   color: #007bff !important;
 }
 </style>
-

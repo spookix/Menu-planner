@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="reset-page">
     <v-container class="d-flex justify-center py-8">
       <v-card class="reset-card" max-width="480" rounded="xl" elevation="6">
@@ -189,3 +189,4 @@ const updatePassword = async () => {
 .reset-page { min-height: 100vh; }
 .reset-card { background: rgba(255,255,255,0.96); border: 1px solid #e9ecef; }
 </style>
+

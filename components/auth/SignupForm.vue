@@ -80,7 +80,7 @@
             size="small"
             @click="emit('switchToLogin')"
           >
-            DéjÃ  un compte ? Se connecter
+            Déjà un compte ? Se connecter
           </v-btn>
         </div>
       </v-form>
@@ -89,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 
 const auth = useAuthStore()
@@ -104,9 +104,9 @@ const confirmPassword = ref('')
 
 const rules = {
   required: (v: string) => !!v || 'Ce champ est requis',
-  username: (v: string) => v.length >= 3 || 'Minimum 3 caractÃ¨res',
-  email: (v: string) => /.+@.+\..+/.test(v) || 'Email invalide',
-  minLength: (v: string) => v.length >= 6 || 'Minimum 6 caractÃ¨res',
+  username: (v: string) => v.length >= 3 || 'Minimum 3 caractères',
+  email: (v: string) => /.+@+\..+/.test(v) || 'Email invalide',
+  minLength: (v: string) => v.length >= 6 || 'Minimum 6 caractères',
   confirmPassword: (v: string) => v === password.value || 'Les mots de passe ne correspondent pas'
 }
 
@@ -126,7 +126,7 @@ const handleSignup = async () => {
       error.value = 'Veuillez vérifier votre email et cliquer sur le lien de confirmation pour activer votre compte.'
     } else if (result.session) {
       // Connexion automatique réussie
-      error.value = 'Inscription réussie ! Vous Ãªtes maintenant connecté.'
+      error.value = 'Inscription réussie ! Vous êtes maintenant connecté.'
     }
   } catch (err: any) {
     error.value = err.message || 'Erreur d\'inscription'
@@ -149,4 +149,3 @@ const emit = defineEmits<{ (e: 'switchToLogin'): void }>()
   color: #007bff !important;
 }
 </style>
-

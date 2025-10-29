@@ -13,7 +13,7 @@ export const useGroceryStore = defineStore('grocery', {
       const cats: Record<string,string[]> = {
         'Fruits et légumes': ['tomate','salade','oignon','carotte','avocat','épinard','poivron','olive','citron'],
         'Produits laitiers': ['lait','yaourt','fromage','feta','mozzarella'],
-        'Épicerie': ['pÃ¢tes','riz','quinoa','pois chiches','lentilles','huile','pesto']
+        'Épicerie': ['pâtes','riz','quinoa','pois chiches','lentilles','huile','pesto']
       }
       const bucket: Record<string, Set<string>> = Object.fromEntries(Object.keys(cats).map(c=>[c,new Set<string>()]))
       const push = (label:string) => {
@@ -33,6 +33,7 @@ export const useGroceryStore = defineStore('grocery', {
     }
   }
 })
+
 
 
 

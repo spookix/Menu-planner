@@ -70,13 +70,14 @@
   </template>
 
 <script setup lang="ts">
+import type { Recipe } from '~/lib/supabase'
 import { useRecipesStore } from '~/stores/recipes'
 
 const store = useRecipesStore()
 
 const emit = defineEmits<{ 
   (e:'update:time', v:number|null):void; 
-  (e:'update:difficulty', v:string|null):void 
+  (e:'update:difficulty', v:Recipe['difficulty']|null):void 
 }>()
 </script>
 
