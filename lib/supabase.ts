@@ -3,7 +3,18 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = 'https://efrjpocadsjqxzitnihr.supabase.co'
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmcmpwb2NhZHNqcXh6aXRuaWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY1MDA2NDEsImV4cCI6MjA3MjA3NjY0MX0.uSUOa3lFgnE7Ln-mH5FwregaGFLPpfmYo4svhHSJsb8'
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Configure client to keep users signed in and auto‑refresh tokens
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  },
+  global: {
+    // Timeout 30s
+    fetch: (url, opts) => fetch(url, { ...opts, signal: AbortSignal.timeout(30_000) })
+  }
+})
 
 // Types pour les tables Supabase
 export interface Recipe {

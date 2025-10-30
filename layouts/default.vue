@@ -7,12 +7,14 @@
     </v-main>
 
     <BottomTabs v-if="auth.isAuthenticated" />
+    <Notifications />
   </v-app>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
+import Notifications from '~/components/ui/Notifications.vue'
 
 const auth = useAuthStore()
 

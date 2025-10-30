@@ -168,7 +168,7 @@
             <v-icon start class="mr-2">
               {{ isEditing ? 'mdi-content-save' : 'mdi-plus' }}
             </v-icon>
-            {{ isEditing ? 'Sauvegarder' : 'Créer' }}
+            {{ isEditing ? 'Sauvegarder' : 'crééer' }}
           </v-btn>
         </div>
 
@@ -183,6 +183,7 @@
 </template>
 
 <script setup lang="ts">
+import { useUiStore } from '~/stores/ui'
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRecipesStore } from '~/stores/recipes'
 import type { Recipe } from '~/lib/supabase'
@@ -197,6 +198,7 @@ const emit = defineEmits<{
 }>()
 
 const recipes = useRecipesStore()
+const ui = useUiStore()
 const form = ref()
 const loading = ref(false)
 const error = ref('')
@@ -236,13 +238,13 @@ onMounted(() => {
   }
 })
 
-// Mettre à jour si la recette passée en prop change (ou bascule création/édition)
+// Mettre à jour si la recette passée en prop change (ou bascule Création/édition)
 watch(() => props.recipe, (val) => {
   if (val) {
     recipe.value = { ...val }
     ingredientsText.value = val.ingredients?.join('\n') || ''
   } else {
-    // reset to defaults for creation mode
+    // reset to defaults for Création mode
     recipe.value = {
       title: '',
       subtitle: '',
@@ -285,19 +287,23 @@ const handleSubmit = async () => {
       ingredients: parseIngredients()
     }
 
+    const cleaned = (recipes as any).sanitizeRecipePayload ? (recipes as any).sanitizeRecipePayload(recipeData) : recipeData
+
     let savedRecipe: Recipe
 
     if (isEditing.value && props.recipe) {
-      // Mise à  jour
-      savedRecipe = await recipes.updateRecipe(props.recipe.id, recipeData)
+      // Mise à jour
+      savedRecipe = await recipes.updateRecipe(props.recipe.id, cleaned)
     } else {
       // Création
-      savedRecipe = await recipes.createRecipe(recipeData as Omit<Recipe, 'id' | 'created_at' | 'updated_at'>)
+      savedRecipe = await recipes.createRecipe(cleaned as Omit<Recipe, 'id' | 'created_at' | 'updated_at'>)
     }
 
     emit('saved', savedRecipe)
+    ui.notify(isEditing.value ? 'Recette enregistrée' : 'Recette créée', { color: 'success', timeout: 5000 })
   } catch (err: any) {
     error.value = err.message || 'Erreur lors de la sauvegarde'
+    ui.notify(error.value, { color: 'error', timeout: 5000 })
   } finally {
     loading.value = false
   }
@@ -315,6 +321,17 @@ const handleSubmit = async () => {
   color: #007bff !important;
 }
 </style>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

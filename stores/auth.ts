@@ -71,7 +71,7 @@ export const useAuthStore = defineStore('auth', {
           password: password
         })
 
-        // Si Ã§a ne marche pas, essayer avec le pseudo
+        // Si ça ne marche pas, essayer avec le pseudo
         if (error && emailOrUsername.includes('@') === false) {
           // Chercher l'utilisateur par pseudo dans user_profiles
           const { data: profileData } = await supabase
@@ -194,7 +194,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    // Mettre Ã  jour le profil utilisateur
+    // Mettre à jour le profil utilisateur
     async updateProfile(updates: { username?: string; full_name?: string; avatar_url?: string }) {
       try {
         if (!this.user) throw new Error('Utilisateur non connecté')
@@ -223,7 +223,7 @@ export const useAuthStore = defineStore('auth', {
       if (!this.user) return
 
       try {
-        // Vérifier si le profil existe déjÃ 
+        // Vérifier si le profil existe déjà 
         const { data: existingProfile } = await supabase
           .from('user_profiles')
           .select('id')
@@ -257,4 +257,5 @@ export const useAuthStore = defineStore('auth', {
     }
   }
 })
+
 
