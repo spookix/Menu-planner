@@ -69,6 +69,7 @@
           @click="isMealSelectionMode ? addRecipeToPlan(r) : $router.push(`/recipes/${r.id}`)"
           @edit="openEdit(r)"
           @delete="openDelete(r)"
+          @add-to-plan="openPlanPicker(r)"
         />
       </div>
 
@@ -83,6 +84,7 @@
       <v-dialog v-model="showCreateForm" max-width="900" persistent>
         <RecipeForm :recipe="activeRecipe || undefined" @saved="handleRecipeSaved" @cancel="showCreateForm = false" />
       </v-dialog>
+      <PlanPickerDialog v-model="showPlanPicker" :recipe="selectedForPlan" />
       <v-dialog v-model="showDeleteDialog" max-width="480">
         <v-card rounded="xl">
           <v-card-title class="text-h6 font-weight-bold">Confirmer la suppression</v-card-title>
@@ -104,12 +106,15 @@ import { ref, onMounted, computed, watch } from "vue"
 import { useRecipesStore } from "~/stores/recipes"
 import { useAuthStore } from "~/stores/auth"
 import { usePlannerStore } from "~/stores/planner"
+import PlanPickerDialog from "~/components/planner/PlanPickerDialog.vue"
 
 const store = useRecipesStore()
 const auth = useAuthStore()
 const planner = usePlannerStore()
 const showCreateForm = ref(false)
 const activeRecipe = ref<any | null>(null)
+const showPlanPicker = ref(false)
+const selectedForPlan = ref<any | null>(null)
 
 const route = useRoute()
 const selectedDate = computed(() => {
@@ -128,6 +133,12 @@ const addRecipeToPlan = async (recipe: any) => {
     console.error('Erreur ajout recette au planning:', error)
   }
 }
+
+const openPlanPicker = (r: any) => {
+  selectedForPlan.value = r
+  showPlanPicker.value = true
+}
+
 
 onMounted(async () => {
   await store.loadRecipes()

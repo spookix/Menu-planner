@@ -15,6 +15,10 @@
               </v-btn>
             </template>
             <v-list>
+              <v-list-item @click.stop="emit('add-to-plan')">
+                <v-icon start>mdi-calendar-plus</v-icon>
+                Ajouter au plan
+              </v-list-item>
               <v-list-item @click.stop="emit('edit')">
                 <v-icon start>mdi-pencil</v-icon>
                 Modifier
@@ -78,7 +82,7 @@
 
   // Define the props and emits correctly
   const props = defineProps<{ recipe: Recipe }>()
-  const emit = defineEmits<{ (e: 'click'): void; (e: 'edit'): void; (e: 'delete'): void }>()
+  const emit = defineEmits<{ (e: 'click'): void; (e: 'edit'): void; (e: 'delete'): void; (e: 'add-to-plan'): void }>()
 
   </script>
   <style scoped>

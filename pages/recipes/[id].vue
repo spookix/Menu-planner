@@ -18,6 +18,9 @@
           <RecipeForm :recipe="recipe!" @saved="handleSavedInPlace" @cancel="showEditDialog = false" />
         </v-dialog>
 
+        <!-- Plan picker dialog -->
+        <PlanPickerDialog v-model="showPlanPicker" :recipe="recipe" />
+
         <!-- Delete dialog -->
         <v-dialog v-model="showDeleteDialog" max-width="480">
           <v-card rounded="xl">
@@ -75,7 +78,7 @@
           <v-btn color="primary" variant="tonal" prepend-icon="mdi-pencil" @click="openEditDialog">Modifier</v-btn>
           <v-btn color="error" variant="tonal" prepend-icon="mdi-delete" @click="showDeleteDialog = true">Supprimer</v-btn>
         </div>
-        <v-btn color="primary" size="large" block rounded="xl" @click="addToPlan">Ajouter au Plan</v-btn>
+        <v-btn color="primary" size="large" block rounded="xl" @click="openPlanPicker">Ajouter au Plan</v-btn>
       </div>
     </template>
     <div v-else class="text-center py-8">
@@ -95,12 +98,14 @@ import { useRecipesStore } from '~/stores/recipes'
 import type { Recipe } from '~/lib/supabase'
 import { usePlannerStore, type MealKey } from '~/stores/planner'
 import RecipeForm from '~/components/recipes/RecipeForm.vue'
+import PlanPickerDialog from '~/components/planner/PlanPickerDialog.vue'
 
 const route = useRoute()
 const recipes = useRecipesStore()
 const planner = usePlannerStore()
 const showDeleteDialog = ref(false)
 const showEditDialog = ref(false)
+const showPlanPicker = ref(false)
 
 const id = route.params.id as string
 
@@ -152,6 +157,8 @@ const handleSavedInPlace = (saved: Recipe) => {
   recipe.value = saved
   showEditDialog.value = false
 }
+
+const openPlanPicker = () => { showPlanPicker.value = true }
 
 // simple: ajoute au premier créneau vide d'aujourd'hui, sinon au déjeuner
 const addToPlan = () => {
