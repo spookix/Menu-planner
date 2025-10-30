@@ -232,6 +232,9 @@ const confirmDelete = async () => {
   .text-h3 {
     font-size: 2rem !important;
   }
+
+  .search-container { padding: 0 8px; }
+  .search-input { font-size: 16px; } /* better mobile keyboard */
 }
 </style>
   

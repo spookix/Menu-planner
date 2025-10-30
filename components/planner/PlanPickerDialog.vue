@@ -1,20 +1,21 @@
 <template>
-  <v-dialog v-model="model" max-width="1200">
+  <v-dialog v-model="model" max-width="1200" content-class="plan-dialog-content">
     <v-card rounded="xl" class="dialog-card">
-      <v-card-title class="d-flex align-center justify-space-between">
-        <div class="d-flex align-center gap-2">
+      <v-card-title class="dialog-header">
+        <div class="title-row">
           <v-icon color="primary" class="mr-2">mdi-calendar-month</v-icon>
-          <span class="text-h6 font-weight-bold">Ajouter au plan</span>
+          <span class="title-text">Ajouter au plan</span>
         </div>
-        <div class="d-flex align-center">
+        <div class="month-row">
           <v-btn icon variant="text" @click="prevMonth" class="mr-1"><v-icon>mdi-chevron-left</v-icon></v-btn>
-          <div class="text-subtitle-1 mx-2">{{ formatMonth(currentMonth) }}</div>
+          <div class="month-label">{{ formatMonth(currentMonth) }}</div>
           <v-btn icon variant="text" @click="nextMonth" class="ml-1"><v-icon>mdi-chevron-right</v-icon></v-btn>
         </div>
       </v-card-title>
       <v-divider />
-      <v-card-text>
-        <div class="calendar">
+      <v-card-text class="dialog-body">
+        <!-- Desktop/tablette: grille mensuelle -->
+        <div class="calendar desktop-only">
           <div class="calendar-header">
             <div v-for="w in weekDays" :key="w" class="calendar-header-cell">{{ w }}</div>
           </div>
@@ -47,9 +48,38 @@
             </div>
           </div>
         </div>
+
+        <!-- Mobile: semaines repliables verticales -->
+        <div class="mobile-weeks mobile-only">
+          <div 
+            v-for="(week, wi) in mobileWeeks" 
+            :key="week.start.toISOString()" 
+            class="week-panel"
+          >
+            <button class="week-header" @click="toggleWeek(wi)">
+              <v-icon size="18" class="mr-2">{{ expandedWeek === wi ? 'mdi-chevron-down' : 'mdi-chevron-right' }}</v-icon>
+              {{ formatWeekRange(week.start) }}
+            </button>
+            <div v-show="expandedWeek === wi" class="week-days">
+              <div v-for="d in week.days" :key="d.toISOString()" class="day-row">
+                <div class="day-date">{{ d.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit' }) }}</div>
+                <div class="day-slots">
+                  <div class="slot-item" @click="handlePick(d, 'lunch', $event)">
+                    <div class="slot-label"><v-icon x-small class="mr-1">mdi-white-balance-sunny</v-icon> Midi</div>
+                    <div class="slot-value ellipsis" :class="{ empty: !getMeal(d, 'lunch') }">{{ getMeal(d, 'lunch')?.recipe.title || '-' }}</div>
+                  </div>
+                  <div class="slot-item" @click="handlePick(d, 'dinner', $event)">
+                    <div class="slot-label"><v-icon x-small class="mr-1">mdi-moon-waning-crescent</v-icon> Soir</div>
+                    <div class="slot-value ellipsis" :class="{ empty: !getMeal(d, 'dinner') }">{{ getMeal(d, 'dinner')?.recipe.title || '-' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </v-card-text>
       <v-divider />
-      <v-card-actions class="justify-end">
+      <v-card-actions class="dialog-actions justify-end">
         <v-btn variant="text" @click="close">Fermer</v-btn>
       </v-card-actions>
     </v-card>
@@ -92,8 +122,8 @@ const close = () => { model.value = false }
 
 const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
 const formatMonth = (d: Date) => d.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
-const prevMonth = () => { const x = new Date(currentMonth.value); x.setMonth(x.getMonth() - 1); currentMonth.value = x }
-const nextMonth = () => { const x = new Date(currentMonth.value); x.setMonth(x.getMonth() + 1); currentMonth.value = x }
+  const prevMonth = () => { const x = new Date(currentMonth.value); x.setMonth(x.getMonth() - 1); currentMonth.value = x }
+  const nextMonth = () => { const x = new Date(currentMonth.value); x.setMonth(x.getMonth() + 1); currentMonth.value = x }
 
 const toDateKey = (date: Date) => {
   const y = date.getFullYear()
@@ -102,7 +132,7 @@ const toDateKey = (date: Date) => {
   return `${y}-${m}-${d}`
 }
 
-const calendarDays = computed(() => {
+  const calendarDays = computed(() => {
   const year = currentMonth.value.getFullYear()
   const month = currentMonth.value.getMonth()
   const first = new Date(year, month, 1)
@@ -119,6 +149,31 @@ const calendarDays = computed(() => {
   }
   return arr
 })
+
+// Découper en semaines pour le mode mobile
+const mobileWeeks = computed(() => {
+  const days = calendarDays.value
+  const weeks: { start: Date; days: Date[] }[] = []
+  for (let i = 0; i < days.length; i += 7) {
+    const slice = days.slice(i, i + 7)
+    if (slice.length) weeks.push({ start: slice[0].date, days: slice.map(d => d.date) })
+  }
+  return weeks
+})
+
+const expandedWeek = ref(0)
+const toggleWeek = (wi: number) => {
+  expandedWeek.value = expandedWeek.value === wi ? -1 : wi
+}
+
+const formatWeekRange = (start: Date) => {
+  const end = new Date(start)
+  end.setDate(end.getDate() + 6)
+  const f = (d: Date) => d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })
+  return `Semaine du ${f(start)} au ${f(end)}`
+}
+
+watch(currentMonth, () => { expandedWeek.value = 0 })
 
 const getMeal = (date: Date, meal: MealKey) => {
   const key = toDateKey(date)
@@ -174,8 +229,14 @@ watch(() => model.value, async (open) => {
 </script>
 
 <style scoped>
+.dialog-header { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.title-row { display: flex; align-items: center; justify-content: center; width: 100%; }
+.title-text { font-size: 1.1rem; font-weight: 700; }
+.month-row { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; }
+.month-label { font-weight: 600; }
+.plan-dialog-content { width: 100vw !important; max-width: 100vw !important; margin: 0 !important; }
 .dialog-card { width: min(1200px, 96vw); }
-.dialog-card :deep(.v-card-text) { overflow-x: hidden; }
+.dialog-body { overflow-x: hidden; }
 .calendar { width: 100%; }
 .calendar-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; padding: 8px 8px 0; }
 .calendar-header-cell { text-align: center; font-weight: 600; color: #6c757d; }
@@ -190,5 +251,41 @@ watch(() => model.value, async (open) => {
 .slot-value { font-size: 14px; color: #2c3e50; }
 .slot-value.empty { color: #adb5bd; font-style: italic; }
 .ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Mobile-first adjustments */
+@media (max-width: 600px) {
+  .plan-dialog-content { width: 100vw !important; max-width: 100vw !important; margin: 0 !important; }
+  .dialog-card { width: 100%; max-width: 100%; border-radius: 0 !important; box-sizing: border-box; }
+  .title-text { font-size: 1.05rem; }
+  .month-label { font-size: 0.95rem; }
+  .dialog-body { padding: 8px !important; }
+  .calendar-header { gap: 6px; padding: 6px 6px 0; }
+  .calendar-header-cell { font-size: 12px; }
+  .calendar-grid { gap: 6px; padding: 6px; }
+  .calendar-cell { padding: 6px; min-height: 96px; border-radius: 10px; }
+  .cell-date { font-size: 12px; }
+  .slot-label { font-size: 11px; }
+  .slot-value { font-size: 12px; }
+  .dialog-actions { padding: 8px 12px !important; }
+  .desktop-only { display: none; }
+  .mobile-only { display: block; }
+  .mobile-weeks { display: grid; }
+}
+
+/* Desktop hides mobile list */
+@media (min-width: 601px) {
+  .desktop-only { display: block; }
+  .mobile-only { display: none; }
+}
+
+/* Mobile weeks */
+.mobile-weeks { gap: 8px; max-width: 100%; }
+.week-header { width: 100%; text-align: left; background: transparent; border: 1px solid #e9ecef; padding: 10px 12px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.week-days { border-left: 2px solid #e9ecef; margin-left: 10px; padding-left: 10px; }
+.day-row { padding: 8px 0; border-bottom: 1px dashed #e9ecef; }
+.day-row:last-child { border-bottom: none; }
+.day-date { font-weight: 700; color: #2c3e50; margin-bottom: 4px; }
+.day-slots { display: grid; gap: 6px; }
+.slot-item { border: 1px solid #e9ecef; border-radius: 10px; padding: 8px; }
 </style>
 

@@ -85,7 +85,7 @@
   const emit = defineEmits<{ (e: 'click'): void; (e: 'edit'): void; (e: 'delete'): void; (e: 'add-to-plan'): void }>()
 
   </script>
-  <style scoped>
+<style scoped>
 .card-menu-btn {
   position: absolute;
   top: 8px;
@@ -210,6 +210,10 @@
   .metadata-item {
     font-size: 0.75rem;
   }
+  .recipe-image-placeholder { height: 160px; }
+  .recipe-content { padding: 12px !important; }
+  .recipe-title { font-size: 1rem; }
+  .recipe-description { -webkit-line-clamp: 2; line-clamp: 2; }
 }
 </style>
   

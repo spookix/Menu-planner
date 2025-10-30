@@ -96,7 +96,7 @@
             <div>
               <div class="text-h6 font-weight-bold">Progression des Courses</div>
               <div class="text-body-2 text-medium-emphasis">
-                {{ totalCompleted }} sur {{ totalItems }} articles termin�s
+                {{ totalCompleted }} sur {{ totalItems }} articles terminés
               </div>
             </div>
             <div class="progress-circle">

@@ -92,4 +92,11 @@ defineProps<{ items: { id:string; title:string; meal:string; img?:string }[] }>(
 .text-primary {
   color: #007bff !important;
 }
+
+@media (max-width: 600px) {
+  .meal-card-content :deep(.pa-4) { padding: 10px !important; }
+  .meal-image-container .meal-image { width: 64px !important; height: 64px !important; }
+  .text-h6 { font-size: 1rem; }
+  .meal-type-badge { margin-top: 2px; }
+}
 </style>
