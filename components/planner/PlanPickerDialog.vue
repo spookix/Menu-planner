@@ -27,7 +27,7 @@
               :class="{ 'other-month': !d.isCurrentMonth, today: d.isToday }"
             >
               <div class="cell-date">{{ d.date.getDate() }}</div>
-              <div class="cell-slot" @click="handlePick(d.date, 'lunch', $event)">
+              <div class="cell-slot" :class="{ empty: !getMeal(d.date, 'lunch') }" @click="handlePick(d.date, 'lunch', $event)">
                 <div class="slot-label">
                   <v-icon x-small class="mr-1">mdi-white-balance-sunny</v-icon>
                   Midi
@@ -36,7 +36,7 @@
                   {{ getMeal(d.date, 'lunch')?.recipe.title || '-' }}
                 </div>
               </div>
-              <div class="cell-slot" @click="handlePick(d.date, 'dinner', $event)">
+              <div class="cell-slot" :class="{ empty: !getMeal(d.date, 'dinner') }" @click="handlePick(d.date, 'dinner', $event)">
                 <div class="slot-label">
                   <v-icon x-small class="mr-1">mdi-moon-waning-crescent</v-icon>
                   Soir
@@ -64,11 +64,11 @@
               <div v-for="d in week.days" :key="d.toISOString()" class="day-row">
                 <div class="day-date">{{ d.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit' }) }}</div>
                 <div class="day-slots">
-                  <div class="slot-item" @click="handlePick(d, 'lunch', $event)">
+                  <div class="slot-item" :class="{ empty: !getMeal(d, 'lunch') }" @click="handlePick(d, 'lunch', $event)">
                     <div class="slot-label"><v-icon x-small class="mr-1">mdi-white-balance-sunny</v-icon> Midi</div>
                     <div class="slot-value ellipsis" :class="{ empty: !getMeal(d, 'lunch') }">{{ getMeal(d, 'lunch')?.recipe.title || '-' }}</div>
                   </div>
-                  <div class="slot-item" @click="handlePick(d, 'dinner', $event)">
+                  <div class="slot-item" :class="{ empty: !getMeal(d, 'dinner') }" @click="handlePick(d, 'dinner', $event)">
                     <div class="slot-label"><v-icon x-small class="mr-1">mdi-moon-waning-crescent</v-icon> Soir</div>
                     <div class="slot-value ellipsis" :class="{ empty: !getMeal(d, 'dinner') }">{{ getMeal(d, 'dinner')?.recipe.title || '-' }}</div>
                   </div>
@@ -246,7 +246,8 @@ watch(() => model.value, async (open) => {
 .calendar-cell.today { border-color: #007bff; box-shadow: 0 0 0 2px rgba(0,123,255,0.15) inset; }
 .cell-date { font-weight: 700; color: #2c3e50; }
 .cell-slot { padding: 6px; border-radius: 10px; transition: background 0.15s ease; cursor: pointer; }
-.cell-slot:hover { background: #f5f9ff; }
+.cell-slot.empty { background: #f8f9fb; }
+.cell-slot:not(.empty):hover { background: transparent; }
 .slot-label { font-size: 12px; color: #6c757d; display: flex; align-items: center; }
 .slot-value { font-size: 14px; color: #2c3e50; }
 .slot-value.empty { color: #adb5bd; font-style: italic; }
@@ -287,5 +288,6 @@ watch(() => model.value, async (open) => {
 .day-date { font-weight: 700; color: #2c3e50; margin-bottom: 4px; }
 .day-slots { display: grid; gap: 6px; }
 .slot-item { border: 1px solid #e9ecef; border-radius: 10px; padding: 8px; }
+.slot-item.empty { background: #f8f9fb; }
 </style>
 

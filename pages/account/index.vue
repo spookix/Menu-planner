@@ -52,8 +52,10 @@ const hydrate = () => {
 }
 
 const reset = () => {
-  error.value = null
-  hydrate()
+  // Annuler et revenir à la page précédente
+  if (redirectTimer) clearTimeout(redirectTimer)
+  if (countdownTimer) clearInterval(countdownTimer)
+  router.back()
 }
 
 const save = async () => {

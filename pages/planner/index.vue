@@ -144,7 +144,8 @@
                 :class="{ 
                   'other-month': !day.isCurrentMonth,
                   'today': day.isToday,
-                  'has-meals': day.meals.length > 0
+                  'has-meals': day.meals.length > 0,
+                  'empty': day.meals.length === 0
                 }"
               >
                 <div class="day-number">{{ day.date.getDate() }}</div>
@@ -601,8 +602,11 @@
 
 <style scoped>
 .planner-container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
+}
+@media (min-width: 1600px) {
+  .planner-container { max-width: 1400px; }
 }
 
 .add-button {
@@ -760,9 +764,8 @@
   border: 2px solid #007bff;
 }
 
-.calendar-day.has-meals {
-  background: rgba(40, 167, 69, 0.05);
-}
+.calendar-day.has-meals { background: transparent; }
+.calendar-day.empty { background: #f8f9fb; }
 
 .day-number {
   font-weight: 600;
@@ -780,7 +783,7 @@
   font-size: 0.75rem;
   padding: 2px 6px;
   border-radius: 8px;
-  background: #e9ecef;
+  background: transparent;
   color: #495057;
   white-space: nowrap;
   overflow: hidden;
@@ -788,15 +791,9 @@
   max-width: 100%;
 }
 
-.meal-chip.lunch {
-  background: rgba(0, 123, 255, 0.1);
-  color: #007bff;
-}
+.meal-chip.lunch { color: #007bff; }
 
-.meal-chip.dinner {
-  background: rgba(220, 53, 69, 0.1);
-  color: #dc3545;
-}
+.meal-chip.dinner { color: #dc3545; }
 
 .more-meals {
   font-size: 0.7rem;
