@@ -2,10 +2,16 @@
   <v-container class="pa-0">
     <v-skeleton-loader v-if="loading" type="image, article" />
     <template v-else-if="recipe">
-      <v-img :src="recipe?.img" height="260" cover />
+      <v-img :src="recipe?.img" height="300" cover eager class="recipe-hero" />
       <div class="pa-4">
         <h1 class="text-h5 font-weight-bold mb-2">{{ recipe?.title }}</h1>
-        <p class="text-body-2 text-medium-emphasis mb-2 recipe-subtitle">{{ recipe?.subtitle }}</p>
+        <div class="d-flex align-start justify-space-between mb-2 gap-3">
+          <p class="text-body-2 text-medium-emphasis recipe-subtitle flex-grow-1 mb-0">{{ recipe?.subtitle }}</p>
+          <div class="inline-actions">
+            <v-btn color="primary" variant="tonal" prepend-icon="mdi-pencil" @click="openEditDialog">Modifier</v-btn>
+            <v-btn color="error" variant="tonal" prepend-icon="mdi-delete" @click="showDeleteDialog = true">Supprimer</v-btn>
+          </div>
+        </div>
 
         <div v-if="recipe?.recipe_url" class="mb-4">
           <v-btn :href="recipe!.recipe_url" target="_blank" rel="noopener" variant="text" prepend-icon="mdi-open-in-new">
@@ -74,10 +80,6 @@
       </div>
 
       <div class="actions-fixed px-4">
-        <div class="d-flex gap-2 mb-3 justify-center">
-          <v-btn color="primary" variant="tonal" prepend-icon="mdi-pencil" @click="openEditDialog">Modifier</v-btn>
-          <v-btn color="error" variant="tonal" prepend-icon="mdi-delete" @click="showDeleteDialog = true">Supprimer</v-btn>
-        </div>
         <v-btn color="primary" size="large" block rounded="xl" @click="openPlanPicker">Ajouter au Plan</v-btn>
       </div>
     </template>
@@ -179,6 +181,20 @@ const addToPlan = () => {
 
 <style scoped>
 .recipe-subtitle{white-space:pre-line}
+.inline-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.recipe-hero :deep(img) {
+  image-rendering: auto;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+/* Desktop: compromis entre cover et contain (moins zoomé, plus grand) */
+@media (min-width: 960px) {
+  .recipe-hero { height: 260px !important; background: #fff; }
+  .recipe-hero :deep(img) { object-fit: cover !important; object-position: center center !important; }
+}
+@media (min-width: 1280px) {
+  .recipe-hero { height: 300px !important; }
+}
 
 /* Place the action buttons above the bottom navigation, with safe area support */
 .actions-fixed {
