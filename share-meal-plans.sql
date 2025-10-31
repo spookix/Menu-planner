@@ -92,3 +92,19 @@ create policy "Recipients can view shared owners profiles" on public.user_profil
       where s.owner_id = user_profiles.id and s.shared_with_id = auth.uid()
     )
   );
+
+-- 6) Helper to list owners who shared their planning with the current user
+create or replace function public.shared_owners_for_me()
+returns table(id uuid, username text)
+language sql
+security definer
+set search_path = public
+as $$
+  select up.id, up.username
+  from public.meal_plan_shares s
+  join public.user_profiles up on up.id = s.owner_id
+  where s.shared_with_id = auth.uid()
+$$;
+
+revoke all on function public.shared_owners_for_me() from public;
+grant execute on function public.shared_owners_for_me() to authenticated;

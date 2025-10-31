@@ -78,7 +78,13 @@ export const usePlannerStore = defineStore('planner', {
       const auth = useAuthStore()
       if (!auth.userId) return
       try {
-        // 1) fetch owner ids shared with me
+        // Prefer RPC that encapsulates joins and bypasses RLS complexity via SECURITY DEFINER
+        const { data: ownersRpc, error: rpcErr } = await supabase.rpc('shared_owners_for_me')
+        if (!rpcErr && Array.isArray(ownersRpc)) {
+          this.sharedOwners = (ownersRpc as any[]).map((o) => ({ id: o.id, username: o.username }))
+          return
+        }
+        // Fallback path: two-step query
         const { data, error } = await supabase
           .from('meal_plan_shares')
           .select('owner_id')
@@ -86,7 +92,6 @@ export const usePlannerStore = defineStore('planner', {
         if (error) throw error
         const ownerIds = ((data as any[]) || []).map(r => r.owner_id).filter(Boolean)
         if (!ownerIds.length) { this.sharedOwners = []; return }
-        // 2) fetch their usernames
         const { data: profiles, error: pErr } = await supabase
           .from('user_profiles')
           .select('id, username')

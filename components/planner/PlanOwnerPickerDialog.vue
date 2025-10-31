@@ -43,6 +43,13 @@ onMounted(async () => {
   selected.value = planner.activeOwnerId || ownId.value
 })
 
+watch(model, async (open) => {
+  if (open) {
+    await planner.loadSharedOwners()
+    if (!selected.value) selected.value = planner.activeOwnerId || ownId.value
+  }
+})
+
 const close = () => { model.value = false }
 const apply = async () => {
   const ownerId = selected.value
@@ -60,4 +67,3 @@ const apply = async () => {
 
 <style scoped>
 </style>
-
