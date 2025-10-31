@@ -82,3 +82,13 @@ $$;
 revoke all on function public.resolve_user_by_email(text) from public;
 grant execute on function public.resolve_user_by_email(text) to authenticated, anon;
 
+-- 5) Allow recipients to read minimal owner profiles (id/username)
+-- so the client can list the shared owners' names
+drop policy if exists "Recipients can view shared owners profiles" on public.user_profiles;
+create policy "Recipients can view shared owners profiles" on public.user_profiles
+  for select using (
+    exists (
+      select 1 from public.meal_plan_shares s
+      where s.owner_id = user_profiles.id and s.shared_with_id = auth.uid()
+    )
+  );

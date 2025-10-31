@@ -20,13 +20,16 @@
                   </span>
                 </v-avatar>
                 <span class="text-body-2 font-weight-medium text-medium-emphasis ml-2">
-                  {{ auth.username || 'Utilisateur' }}
+                  {{ displayName }}
                 </span>
                 <v-icon size="18" class="ml-1">mdi-chevron-down</v-icon>
               </button>
             </template>
             <v-list density="compact">
-              <v-list-subheader>Mon compte</v-list-subheader>
+              <v-list-item @click="$router.push('/account')">
+                <template #prepend><v-icon size="18">mdi-account</v-icon></template>
+                <v-list-item-title>Mon compte</v-list-item-title>
+              </v-list-item>
               <v-list-item @click="openPickOwner = true">
                 <template #prepend><v-icon size="18">mdi-calendar-account</v-icon></template>
                 <v-list-item-title>Changer de planning</v-list-item-title>
@@ -64,7 +67,7 @@
 
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { usePlannerStore } from '~/stores/planner'
 import SharePlanningDialog from '~/components/planner/SharePlanningDialog.vue'
 import PlanOwnerPickerDialog from '~/components/planner/PlanOwnerPickerDialog.vue'
@@ -73,6 +76,8 @@ const auth = useAuthStore()
 const planner = usePlannerStore()
 const openShare = ref(false)
 const openPickOwner = ref(false)
+
+const displayName = computed(() => auth.username || (auth.userEmail?.split('@')[0] || 'Utilisateur'))
 
 onMounted(() => {
   planner.initOwnerContext()

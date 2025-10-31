@@ -12,7 +12,10 @@
       class="mb-2"
       @update:model-value="(v:boolean) => { if(!v) ui.remove(n.id) }"
     >
-      {{ n.message }}
+      <div class="snack-content">
+        <div class="snack-title">{{ n.message }}</div>
+        <div v-if="n.subtext" class="snack-subtext">{{ n.subtext }}</div>
+      </div>
     </v-snackbar>
   </div>
 </template>
@@ -38,5 +41,7 @@ watchEffect(() => {
   right: 12px;
   z-index: 9999;
 }
+.snack-content { display: flex; flex-direction: column; }
+.snack-title { font-weight: 600; }
+.snack-subtext { opacity: 0.9; font-size: 0.875rem; margin-top: 2px; }
 </style>
-

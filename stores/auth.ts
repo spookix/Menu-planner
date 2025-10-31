@@ -207,11 +207,16 @@ export const useAuthStore = defineStore('auth', {
         if (error) throw error
 
         // Mettre Ã  jour les métadonnées de l'utilisateur
-        const { error: authError } = await supabase.auth.updateUser({
+        const { data: authData, error: authError } = await supabase.auth.updateUser({
           data: updates
         })
 
         if (authError) throw authError
+        if (authData?.user) {
+          this.user = authData.user as any
+        } else if (this.user) {
+          this.user = { ...(this.user as any), user_metadata: { ...(this.user as any).user_metadata, ...updates } } as any
+        }
       } catch (error: any) {
         this.error = error.message
         throw error
@@ -257,5 +262,4 @@ export const useAuthStore = defineStore('auth', {
     }
   }
 })
-
 
