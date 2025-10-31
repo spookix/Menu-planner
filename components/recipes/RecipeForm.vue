@@ -1,7 +1,16 @@
 ﻿<template>
   <v-card class="recipe-form-card" max-width="800" elevation="8" rounded="xl">
-    <v-card-title class="text-center text-h5 font-weight-bold text-primary py-6">
+    <v-card-title class="text-center text-h5 font-weight-bold text-primary py-6 position-relative">
       {{ isEditing ? (recipe.title || 'Modifier la Recette') : 'Nouvelle Recette' }}
+      <v-btn
+        icon
+        variant="text"
+        class="close-btn"
+        :aria-label="'Fermer'"
+        @click="$emit('cancel')"
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
     </v-card-title>
     <v-card-text class="px-6 pt-0" v-if="isEditing && recipe.img">
       <v-img :src="recipe.img" height="220" cover rounded="lg" class="mb-4" />
@@ -320,6 +329,9 @@ const handleSubmit = async () => {
 .text-primary {
   color: #007bff !important;
 }
+
+.position-relative { position: relative; }
+.close-btn { position: absolute; right: 8px; top: 8px; }
 </style>
 
 

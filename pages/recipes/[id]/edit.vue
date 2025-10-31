@@ -4,7 +4,12 @@
     <template v-else>
       <div class="d-flex align-center justify-space-between mb-4">
         <h1 class="text-h5 font-weight-bold text-primary">Modifier la recette</h1>
-        <v-btn variant="text" prepend-icon="mdi-arrow-left" @click="$router.back()">Retour</v-btn>
+        <div class="d-flex align-center gap-2">
+          <v-btn variant="text" prepend-icon="mdi-arrow-left" @click="$router.back()">Retour</v-btn>
+          <v-btn icon variant="text" :aria-label="'Fermer'" @click="$router.push('/recipes')">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </div>
       </div>
       <RecipeForm :recipe="recipe!" @saved="handleSaved" @cancel="$router.back()" />
     </template>
@@ -41,4 +46,3 @@ const handleSaved = (saved: Recipe) => {
 <style scoped>
 .text-primary { color: #007bff !important; }
 </style>
-
