@@ -184,9 +184,8 @@
                     <v-btn 
                       size="x-small" 
                       variant="tonal" 
-                      color="primary"
                       @click="selectMealSlot(day.date, 'lunch')"
-                      class="meal-button"
+                      class="meal-button empty"
                     >
                       <v-icon size="12" class="mr-1">mdi-plus</v-icon>
                       Midi
@@ -227,9 +226,8 @@
                     <v-btn 
                       size="x-small" 
                       variant="tonal" 
-                      color="error"
                       @click="selectMealSlot(day.date, 'dinner')"
-                      class="meal-button"
+                      class="meal-button empty"
                     >
                       <v-icon size="12" class="mr-1">mdi-plus</v-icon>
                       Soir
@@ -783,7 +781,7 @@
   font-size: 0.75rem;
   padding: 2px 6px;
   border-radius: 8px;
-  background: transparent;
+  background: #e9ecef;
   color: #495057;
   white-space: nowrap;
   overflow: hidden;
@@ -791,9 +789,9 @@
   max-width: 100%;
 }
 
-.meal-chip.lunch { color: #007bff; }
+.meal-chip.lunch { background: rgba(0, 123, 255, 0.12); color: #007bff; }
 
-.meal-chip.dinner { color: #dc3545; }
+.meal-chip.dinner { background: rgba(220, 53, 69, 0.12); color: #dc3545; }
 
 .more-meals {
   font-size: 0.7rem;
@@ -813,6 +811,8 @@
   text-transform: none;
   letter-spacing: 0;
 }
+
+.meal-button.empty { background: #f1f3f5 !important; color: #6c757d !important; }
 
 .clickable-meal {
   cursor: pointer;
